@@ -6,7 +6,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-bool validOption(const char** optionList,size_t size ,char* option);
+void print_usage();
+bool validOption(const char** optionList, size_t size, char* option);
 bool setOption(char *option);
 
 #endif
