@@ -48,7 +48,13 @@ int main(int argc, char* argv[], char* envp[]) {
     }
   }
   
-  char fullpath[256] = ".";
+  char fullpath[256];
+  strcpy(fullpath, dirpath);
+
+  if (inicial_directory(dirpath) != 0) {
+    perror("inicial_directory");
+    exit(2);
+  }
   int result = recursive_tree(dirpath, fullpath);
 
   return 0;

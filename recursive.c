@@ -4,12 +4,48 @@ extern bool all,bytes,block_size,count_links,dereference,separate_dirs,max_depth
 
 // Display the Information about a file
 void explore_file(char* path, struct dirent *direntp, struct stat *stat_buf) {
-  printf("%-ld\t%s\n",stat_buf->st_size, path);
+  //printf("%-ld\t%s\n",stat_buf->st_size/1024, path);
+  printf("%-ld\t%s\n",stat_buf->st_blocks/2, path);
 }
 
 // Display the Information about a directory
 void explore_directory(char* path, struct dirent *direntp, struct stat *stat_buf) {
-  printf("%-ld\t%s\n",stat_buf->st_blocks, path);
+  printf("%-ld\t%s\n",stat_buf->st_blocks/2, path);
+}
+
+int inicial_directory(char* dirpath) {
+  DIR *dirp;
+  struct dirent *direntp;
+  struct stat stat_buf;
+  char* copy = (char *) malloc (strlen(dirpath) - 1);
+
+  strcpy(copy, dirpath);
+  if (strncmp(copy, "./", 2) == 0) {
+    copy = strtok(copy, "./");
+  }
+
+  if((dirp=opendir(".")) == NULL) {
+    if (dirpath[0] == '\0')
+      printf("No directory input\n");
+    else
+      printf("Invalid Option: %s\n", dirpath);
+    exit(1);
+  }
+
+  while((direntp=readdir(dirp)) != NULL) {
+    if(strcmp(direntp->d_name,copy) == 0) {
+      if(stat(direntp->d_name,&stat_buf) == -1) {
+          perror("stat ERROR");
+          exit(3);
+      }
+      explore_directory(dirpath, direntp, &stat_buf);
+      closedir(dirp);
+      return 0;
+    }
+  }
+  closedir(dirp);
+  printf("Error: Directory not found\n");
+  exit(4);
 }
 
 int recursive_tree(char* dirpath, char* fullpath) {
