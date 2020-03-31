@@ -54,3 +54,18 @@ bool setOption(char *option) {
 
   return false;
 }
+
+int str_length(double n)
+{
+  int num =1;
+
+  n=n/10;
+
+  while(n!=0) 
+  { 
+    num++;
+    n=n/10;
+  }
+  
+  return num;
+}

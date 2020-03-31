@@ -48,6 +48,65 @@ int inicial_directory(char* dirpath) {
   exit(4);
 }
 
+
+
+//NEW
+
+//Executes simpledu on the inner directory
+
+void exec_dir(char* current_path)
+{
+
+  char *arg[10];
+  int n =2;
+
+  arg[0]= "simpledu";
+  arg[1]= current_path;
+
+
+  if (all)
+  {
+    arg[n] = "-a";
+    n++;
+  }
+
+  // if(apparent_size) not yet implemented
+
+  if (block_size /*!= default block size ?*/ )
+  {
+    arg[n]="-B";
+    n++;
+    int size = str_length(block_size);
+    char block_size_string[size + 1];
+    sprintf(block_size_string, "%d", block_size);
+    arg[n] = block_size_string;
+    n++;
+  }
+
+  if(dereference)
+  {
+    arg[n] = "--L";
+    n++;
+  }
+
+  // if(max_depth)
+  //depth--;
+  //acrescentar isso à string
+
+  if(separate_dirs)
+  {
+    arg[n] = "--S";
+    n++;
+  }
+
+  arg[n] = NULL;
+
+
+  execv(arg[0],arg); 
+  
+}
+
+
 int recursive_tree(char* dirpath, char* fullpath) {
   pid_t main_pid;
   int status;
@@ -105,9 +164,15 @@ int recursive_tree(char* dirpath, char* fullpath) {
             strcat(current_path, direntp->d_name);
             current_path[strlen(current_path)] = '\0';
 
-            explore_directory(current_path, direntp, &stat_buf);
-            while (waitpid(new_pid, &status, WNOHANG) <= 0);
+            
+
+            // CHANGE
+            //explore_directory(current_path, direntp, &stat_buf);
+            //while (waitpid(new_pid, &status, WNOHANG) <= 0);
+          
             //printf("Child with PID=%d finished with exit code --- %d\n", new_pid, WEXITSTATUS(status));
+            exec_dir(current_path);
+
           }
           else {
             perror("fork ERROR");
