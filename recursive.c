@@ -70,8 +70,8 @@ int recursive_tree(char* dirpath, char* fullpath) {
             current_path[strlen(current_path)] = '\0';
 
             explore_directory(current_path, direntp, &stat_buf);
-            waitpid(new_pid, &status, WNOHANG);
-            //printf("Child with PID=%d finished with exit code %d\n", new_pid, WEXITSTATUS(status));
+            while (waitpid(new_pid, &status, WNOHANG) <= 0);
+            //printf("Child with PID=%d finished with exit code --- %d\n", new_pid, WEXITSTATUS(status));
           }
           else {
             perror("fork ERROR");
