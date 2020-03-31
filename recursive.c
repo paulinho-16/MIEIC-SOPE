@@ -12,7 +12,7 @@ void explore_directory(char* path, struct dirent *direntp, struct stat *stat_buf
   printf("%-ld\t%s\n",stat_buf->st_blocks, path);
 }
 
-int recursive_tree(char* dirpath) {
+int recursive_tree(char* dirpath, char* fullpath) {
   pid_t main_pid;
   int status;
 
@@ -45,20 +45,32 @@ int recursive_tree(char* dirpath) {
 
         pid_t new_pid;
         int new_status;
-        char* new_dirpath = (char*)malloc(2 + strlen(direntp->d_name) + 1);
-        strcat(new_dirpath, "./");
-        strcat(new_dirpath, direntp->d_name);
-        new_dirpath[strlen(new_dirpath)] = '\0';
 
         if(S_ISDIR(stat_buf.st_mode)) { //fazer ciclo recursivo que retorna a soma dos tamanhos dos ficheiros interiores ao diretorio
+          char* new_dirpath = (char*)malloc(2 + strlen(direntp->d_name) + 1);
+          strcat(new_dirpath, "./");
+          strcat(new_dirpath, direntp->d_name);
+          new_dirpath[strlen(new_dirpath)] = '\0';
+
           new_pid = fork();
           if (new_pid == 0) {
-            recursive_tree(new_dirpath);
+            // Constroi o fullpath, a apresentar no ecrã
+            strcat(fullpath, "/");
+            strcat(fullpath, direntp->d_name);
+            fullpath[strlen(fullpath)] = '\0';
+
+            recursive_tree(new_dirpath, fullpath);
             exit(0);
           }
           else if (new_pid > 0) {
-            explore_directory(new_dirpath, direntp, &stat_buf);
-            wait(&new_status);
+            char* current_path = (char*)malloc(strlen(fullpath) + 1 + strlen(direntp->d_name));
+            strcpy(current_path, fullpath);
+            strcat(current_path, "/");
+            strcat(current_path, direntp->d_name);
+            current_path[strlen(current_path)] = '\0';
+
+            explore_directory(current_path, direntp, &stat_buf);
+            waitpid(new_pid, &status, WNOHANG);
             //printf("Child with PID=%d finished with exit code %d\n", new_pid, WEXITSTATUS(status));
           }
           else {
@@ -68,7 +80,13 @@ int recursive_tree(char* dirpath) {
         }
 
         if(S_ISREG(stat_buf.st_mode) && all) {
-          explore_file(new_dirpath, direntp, &stat_buf);
+          char* current_path = (char*)malloc(strlen(fullpath) + 1 + strlen(direntp->d_name));
+          strcpy(current_path, fullpath);
+          strcat(current_path, "/");
+          strcat(current_path, direntp->d_name);
+          current_path[strlen(current_path)] = '\0';
+
+          explore_file(current_path, direntp, &stat_buf);
         }
       }
     }
