@@ -69,3 +69,12 @@ int str_length(double n)
   
   return num;
 }
+
+bool is_directory(char* arg) {
+  struct stat stat_buf;
+  if(stat(arg,&stat_buf) == 0) {
+    if (S_ISDIR(stat_buf.st_mode))
+      return true;
+  }
+  return false;
+}

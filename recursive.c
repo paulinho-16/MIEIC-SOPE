@@ -44,7 +44,6 @@ int inicial_directory(char* dirpath) {
     }
   }
   closedir(dirp);
-  printf("Error: Directory not found\n");
   exit(4);
 }
 
@@ -119,10 +118,7 @@ int recursive_tree(char* dirpath, char* fullpath) {
     struct stat stat_buf;
 
     if((dirp=opendir(dirpath)) == NULL) {
-      if (dirpath[0] == '\0')
-        printf("No directory input\n");
-      else
-        printf("Invalid Option: %s\n", dirpath);
+      perror("opendir ERROR:");
       exit(2);
     }
 

@@ -5,3 +5,6 @@ main.o: signal_handlers.h utils.h
 signal_handlers.o: signal_handlers.h 
 utils.o: utils.h
 recursive.o: recursive.h
+
+clean: $(OBJECTS)
+	rm $(OBJECTS)
