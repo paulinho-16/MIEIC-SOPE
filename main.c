@@ -62,7 +62,7 @@ int main(int argc, char* argv[], char* envp[]) {
 
   char fullpath[256];
   strcpy(fullpath, dirpath);
-
+  
   if (inicial_directory(dirpath) != 0) {
     perror("inicial_directory");
     exit(4);
