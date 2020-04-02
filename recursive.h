@@ -12,6 +12,9 @@
 #include <stdbool.h>
 #include "utils.h"
 
+#define READ 0
+#define WRITE 1
+
 void explore_file(char* path, struct dirent *direntp, struct stat *stat_buf);
 
 void explore_directory(char* path, struct dirent *direntp, struct stat *stat_buf);

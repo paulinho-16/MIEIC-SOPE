@@ -67,7 +67,7 @@ int main(int argc, char* argv[], char* envp[]) {
     perror("inicial_directory");
     exit(4);
   }
-  int result = recursive_tree(dirpath, fullpath);
+  int result = recursive_tree(dirpath, fullpath); //dirpath and fullpath are the same?
 
   return 0;
 }

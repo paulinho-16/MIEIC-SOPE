@@ -35,7 +35,7 @@ int inicial_directory(char* dirpath) {
         perror("stat ERROR");
         exit(3);
       }
-      explore_directory(dirpath, direntp, &stat_buf);
+      //explore_directory(dirpath, direntp, &stat_buf);
       closedir(dirp);
       return 0;
     }
@@ -109,6 +109,8 @@ void exec_dir(char* current_path)
 int recursive_tree(char* dirpath, char* fullpath) {
   pid_t main_pid;
   int status;
+  int p1[2],p2[2];
+  unsigned long int total_size=0;
 
   DIR *dirp;
   struct dirent *direntp;
@@ -117,6 +119,11 @@ int recursive_tree(char* dirpath, char* fullpath) {
   if((dirp=opendir(dirpath)) == NULL) {
     perror("opendir ERROR:");
     exit(2);
+  }
+
+  if(pipe(p1)<0 || pipe(p2)<0){
+    perror("pipe error");
+    exit(5);
   }
 
   while((direntp=readdir(dirp)) != NULL) {
@@ -137,19 +144,32 @@ int recursive_tree(char* dirpath, char* fullpath) {
       int new_status;
 
       if(S_ISDIR(stat_buf.st_mode)) { //fazer ciclo recursivo que retorna a soma dos tamanhos dos ficheiros interiores ao diretorio
+
+        /*code below wasn't being used
+
         char* new_dirpath = (char*)malloc(2 + strlen(direntp->d_name) + 1);
         strcat(new_dirpath, "./");
         strcat(new_dirpath, direntp->d_name);
-        new_dirpath[strlen(new_dirpath)] = '\0';
+        new_dirpath[strlen(new_dirpath)] = '\0'; */
+
 
         new_pid = fork();
         if (new_pid == 0) {
           //printf("Child with PID=%d finished with exit code --- %d\n", new_pid, WEXITSTATUS(status));
           //closedir(dirp);
           exec_dir(current_path);
+          exit(0);
         }
         else if (new_pid > 0) {
-          while (waitpid(new_pid, &status, WNOHANG) <= 0);
+          int value;
+          close(p1[WRITE]);
+          dup2(p1[READ],STDIN_FILENO);
+          waitpid(new_pid, &status, WNOHANG);
+          read(p1[READ],&value,sizeof(value));
+          //printf("read %d to %s\n",value,dirpath);
+          close(p1[READ]);
+          total_size+=value;
+
         }
         else {
           perror("fork ERROR");
@@ -157,17 +177,32 @@ int recursive_tree(char* dirpath, char* fullpath) {
         }
       }
 
-      if(S_ISREG(stat_buf.st_mode) && all) {
+      if(S_ISREG(stat_buf.st_mode)) {
         char* current_path = (char*)malloc(strlen(fullpath) + 1 + strlen(direntp->d_name));
         strcpy(current_path, fullpath);
         strcat(current_path, "/");
         strcat(current_path, direntp->d_name);
         current_path[strlen(current_path)] = '\0';
-
-        explore_file(current_path, direntp, &stat_buf);
+        total_size+=stat_buf.st_blocks/2;
+        if(all)
+          explore_file(current_path, direntp, &stat_buf);
+        
       }
     }
   }
+
+  total_size+=4; //standard size of directories
+
+  printf("%-ld\t%s\n",total_size, dirpath);
+
+  if(strcmp(dirpath,".")!=0){
+    close(p2[READ]);
+    dup2(p2[WRITE],STDOUT_FILENO);
+    write(p2[WRITE],&total_size,sizeof(total_size));
+    close(p2[WRITE]);
+    //printf("wrote %ld from %s\n",total_size,dirpath);
+  }
+
   closedir(dirp);
   exit(0);
 }
