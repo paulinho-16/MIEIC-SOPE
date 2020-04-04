@@ -21,10 +21,6 @@ void explore_directory(char* path, struct dirent *direntp, struct stat *stat_buf
 
 int inicial_directory(char* dirpath);
 
-void exec_dir(char* current_path);
-
-int recursive_tree(char* dirpath, char* fullpath);
-
-
+int recursive_tree(char* dirpath, int dir_index, char** argv);
 
 #endif

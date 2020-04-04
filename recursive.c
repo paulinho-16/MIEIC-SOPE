@@ -35,7 +35,6 @@ int inicial_directory(char* dirpath) {
         perror("stat ERROR");
         exit(3);
       }
-      //explore_directory(dirpath, direntp, &stat_buf);
       closedir(dirp);
       return 0;
     }
@@ -44,70 +43,7 @@ int inicial_directory(char* dirpath) {
   exit(4);
 }
 
-
-
-//NEW
-
-//Executes simpledu on the inner directory
-
-void exec_dir(char* current_path)
-{
-
-  char* arg[10];
-  int n = 2;
-
-  arg[0]= "./simpledu";
-  arg[1]= current_path;
-
-
-  if (all)
-  {
-    arg[n] = "-a";
-    n++;
-  }
-  if (count_links)
-  {
-    arg[n] = "-l";
-    n++;
-  }
-
-  // if(apparent_size) not yet implemented
-
-  if (block_size /*!= default block size ?*/ )
-  {
-    arg[n]="-B";
-    n++;
-    int size = str_length(block_size);
-    char block_size_string[size + 1];
-    sprintf(block_size_string, "%d", block_size);
-    arg[n] = block_size_string;
-    n++;
-  }
-
-  if(dereference)
-  {
-    arg[n] = "--L";
-    n++;
-  }
-
-  // if(max_depth)
-  //depth--;
-  //acrescentar isso à string
-
-  if(separate_dirs)
-  {
-    arg[n] = "--S";
-    n++;
-  }
-
-  arg[n] = NULL;
-
-  execvp(arg[0],arg);
-}
-
-
-int recursive_tree(char* dirpath, char* fullpath) {
-  pid_t main_pid;
+int recursive_tree(char* dirpath, int dir_index, char** argv) {
   int status;
   int p1[2],p2[2];
   unsigned long int total_size=0;
@@ -129,8 +65,8 @@ int recursive_tree(char* dirpath, char* fullpath) {
   while((direntp=readdir(dirp)) != NULL) {
     if(strncmp(direntp->d_name,".",1) != 0) { // not hidden directories
 
-      char* current_path = (char*)malloc(strlen(fullpath) + 1 + strlen(direntp->d_name));
-      strcpy(current_path, fullpath);
+      char* current_path = (char*)malloc(strlen(dirpath) + 1 + strlen(direntp->d_name));
+      strcpy(current_path, dirpath);
       strcat(current_path, "/");
       strcat(current_path, direntp->d_name);
       current_path[strlen(current_path)] = '\0';
@@ -145,31 +81,22 @@ int recursive_tree(char* dirpath, char* fullpath) {
 
       if(S_ISDIR(stat_buf.st_mode)) { //fazer ciclo recursivo que retorna a soma dos tamanhos dos ficheiros interiores ao diretorio
 
-        /*code below wasn't being used
-
-        char* new_dirpath = (char*)malloc(2 + strlen(direntp->d_name) + 1);
-        strcat(new_dirpath, "./");
-        strcat(new_dirpath, direntp->d_name);
-        new_dirpath[strlen(new_dirpath)] = '\0'; */
-
-
         new_pid = fork();
         if (new_pid == 0) {
-          //printf("Child with PID=%d finished with exit code --- %d\n", new_pid, WEXITSTATUS(status));
-          //closedir(dirp);
-          exec_dir(current_path);
-          exit(0);
+          argv[dir_index] = current_path;
+          execvp(argv[0], argv);
         }
         else if (new_pid > 0) {
           int value;
           close(p1[WRITE]);
           dup2(p1[READ],STDIN_FILENO);
-          waitpid(new_pid, &status, WNOHANG);
+          wait(&status);
+          //waitpid(new_pid, &status, WNOHANG);
+          printf("Child with PID=%d finished with exit code %d\n", new_pid, WEXITSTATUS(status));
           read(p1[READ],&value,sizeof(value));
           //printf("read %d to %s\n",value,dirpath);
           close(p1[READ]);
           total_size+=value;
-
         }
         else {
           perror("fork ERROR");
@@ -178,15 +105,14 @@ int recursive_tree(char* dirpath, char* fullpath) {
       }
 
       if(S_ISREG(stat_buf.st_mode)) {
-        char* current_path = (char*)malloc(strlen(fullpath) + 1 + strlen(direntp->d_name));
-        strcpy(current_path, fullpath);
+        char* current_path = (char*)malloc(strlen(dirpath) + 1 + strlen(direntp->d_name));
+        strcpy(current_path, dirpath);
         strcat(current_path, "/");
         strcat(current_path, direntp->d_name);
         current_path[strlen(current_path)] = '\0';
         total_size+=stat_buf.st_blocks/2;
         if(all)
           explore_file(current_path, direntp, &stat_buf);
-        
       }
     }
   }
@@ -202,6 +128,8 @@ int recursive_tree(char* dirpath, char* fullpath) {
     close(p2[WRITE]);
     //printf("wrote %ld from %s\n",total_size,dirpath);
   }
+
+  printf("FIM DO RECURSIVEEE\n");
 
   closedir(dirp);
   exit(0);

@@ -1,6 +1,6 @@
 OBJECTS = main.o signal_handlers.o utils.o recursive.o
 simpledu: $(OBJECTS)
-	cc $(OBJECTS) -o simpledu
+	cc $(OBJECTS) -Wall -o simpledu
 main.o: signal_handlers.h utils.h
 signal_handlers.o: signal_handlers.h 
 utils.o: utils.h

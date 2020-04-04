@@ -15,8 +15,6 @@
 
 bool all=false,bytes=false,block_size=false,count_links=false,dereference=false,separate_dirs=false,max_depth=false;
 
-int recursive_tree();
-
 int main(int argc, char* argv[], char* envp[]) {
 
   if (argc < 2 || argc > 9) {
@@ -40,9 +38,13 @@ int main(int argc, char* argv[], char* envp[]) {
   //sets path and sets flags(all,bytes,block_size...) accordingly to the given command
   //the flags still aren't being used for anything
 
+  int dir_index;
+
   for(int i = 1 ; i < argc ; i++) {
-    if (is_directory(argv[i]))
+    if (is_directory(argv[i])) {
       strcpy(dirpath,argv[i]);
+      dir_index = i;
+    }
     else if(validOption(opts,opts_size,argv[i])){
       setOption(argv[i]);      
     }
@@ -59,15 +61,15 @@ int main(int argc, char* argv[], char* envp[]) {
     printf("No directory input\n");
     exit(3);
   }
-
-  char fullpath[256];
-  strcpy(fullpath, dirpath);
   
   if (inicial_directory(dirpath) != 0) {
     perror("inicial_directory");
     exit(4);
   }
-  int result = recursive_tree(dirpath, fullpath); //dirpath and fullpath are the same?
 
-  return 0;
+  int result = recursive_tree(dirpath, dir_index, argv);
+
+  printf("FIMMM\n");
+
+  return 66;
 }
