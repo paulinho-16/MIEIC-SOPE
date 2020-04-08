@@ -16,6 +16,7 @@ void explore_directory(char* path, struct dirent *direntp, struct stat *stat_buf
 int recursive_tree(char* dirpath, int dir_index, char** argv) {
   int status;
   unsigned long int total_size=0;
+  int my_pipe[2];
 
   DIR *dirp;
   struct dirent *direntp;
@@ -31,7 +32,8 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
 
       char* current_path = (char*)malloc(strlen(dirpath) + 1 + strlen(direntp->d_name));
       strcpy(current_path, dirpath);
-      strcat(current_path, "/");
+      if(current_path[strlen(dirpath)-1]!='/')
+        strcat(current_path, "/");
       strcat(current_path, direntp->d_name);
       current_path[strlen(current_path)] = '\0';
 
@@ -44,7 +46,6 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
       int new_status;
 
       if(S_ISDIR(stat_buf.st_mode)) {
-        int my_pipe[2];
         
         if(pipe(my_pipe) < 0) {
           perror("pipe error");
@@ -58,24 +59,26 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
             perror("dup2");
             exit(9);
           }
+          close(my_pipe[WRITE]);
           argv[dir_index] = current_path;
           execvp(argv[0], argv);
         }
         else if (new_pid > 0) {
-          char linha_total[4096];
-          char linha_total2[4096];
           char* token;
-          int contador;
-          //sleep(1);
           close(my_pipe[WRITE]);
           int ret;
           char buffer[1024];
+
           while ((ret = read(my_pipe[READ], buffer, 1024)) > 0) {
             printf("%s", buffer);
             token = strtok(buffer, "\t");
             total_size += atol(token);
           }
-          wait(&status);
+
+          close(my_pipe[READ]);
+
+          waitpid(-1,&status,0);
+
         }
         else {
           perror("fork ERROR");
@@ -86,19 +89,14 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
       if(S_ISREG(stat_buf.st_mode)) {
         char* current_path = (char*)malloc(strlen(dirpath) + 1 + strlen(direntp->d_name));
         strcpy(current_path, dirpath);
-        strcat(current_path, "/");
+        if(current_path[strlen(dirpath)-1]!='/')
+          strcat(current_path, "/");
         strcat(current_path, direntp->d_name);
         current_path[strlen(current_path)] = '\0';
         total_size+=stat_buf.st_blocks/2;
 
         if(all) {
-          char nr_blocks[256];
-          sprintf(nr_blocks, "%ld", stat_buf.st_blocks/2);
-          write(STDIN_FILENO, nr_blocks, sizeof(long int));
-          write(STDIN_FILENO, "\t", 1);
-          write(STDIN_FILENO, current_path, strlen(current_path));
-          write(STDIN_FILENO, "\n", 1);
-          //explore_file(current_path, direntp, &stat_buf);
+          explore_file(current_path, direntp, &stat_buf);
         }
       }
     }

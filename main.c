@@ -64,7 +64,5 @@ int main(int argc, char* argv[], char* envp[]) {
 
   int result = recursive_tree(dirpath, dir_index, argv);
 
-  printf("FIMMM\n");
-
-  return 66;
+  return 0;
 }
