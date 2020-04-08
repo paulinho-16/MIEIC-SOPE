@@ -3,6 +3,7 @@
 extern bool all,bytes,block_size,count_links,dereference,separate_dirs,max_depth;
 
 extern long int numero_blocos;
+extern long int depth;
 
 // Display the Information about a file
 void explore_file(char* path, struct stat *stat_buf, long int *total_size) {
@@ -19,7 +20,7 @@ void explore_file(char* path, struct stat *stat_buf, long int *total_size) {
 
   *total_size += shown_size;
 
-  if (all)
+  if (all && (!max_depth || (max_depth && depth > 0)))
     printf("%-ld\t%s\n",shown_size, path);
 }
 
@@ -28,7 +29,7 @@ void explore_directory(char* path, struct dirent *direntp, struct stat *stat_buf
   printf("%-ld\t%s\n",stat_buf->st_blocks/2, path);
 }
 
-int recursive_tree(char* dirpath, int dir_index, char** argv) {
+int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
   int status;
   unsigned long int total_size=0;
   int my_pipe[2];
@@ -72,7 +73,7 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
       }
 
       if(S_ISDIR(stat_buf.st_mode)) {
-        
+
         if(pipe(my_pipe) < 0) {
           perror("pipe error");
           exit(5);
@@ -87,6 +88,17 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
           }
           close(my_pipe[WRITE]);
           argv[dir_index] = current_path;
+          if (depth_index != -1) {
+            char new_depth[256];
+            char depth_string[256];
+            if (depth > 0)
+              depth--;
+            sprintf(depth_string, "%ld", depth);
+            strcpy(new_depth, "--max-depth=");
+            strcat(new_depth, depth_string);
+            //printf("NEW DEPTH: %s\n", new_depth);
+            argv[depth_index] = new_depth;
+          }
           execvp(argv[0], argv);
         }
         else if (new_pid > 0) {
@@ -96,7 +108,8 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
           char buffer[1024];
 
           while ((ret = read(my_pipe[READ], buffer, 1024)) > 0) {
-            printf("%s", buffer);
+            if (!max_depth || (max_depth && depth > 0))
+              printf("%s", buffer);
             token = strtok(buffer, "\t");
             if(!separate_dirs)
               total_size += atol(token);

@@ -19,6 +19,6 @@ void explore_file(char* path, struct stat *stat_buf, long int *total_size);
 
 void explore_directory(char* path, struct dirent *direntp, struct stat *stat_buf);
 
-int recursive_tree(char* dirpath, int dir_index, char** argv);
+int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv);
 
 #endif

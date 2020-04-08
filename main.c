@@ -16,6 +16,7 @@
 bool all=false,bytes=false,block_size=false,count_links=false,dereference=false,separate_dirs=false,max_depth=false;
 
 long int numero_blocos = 0;
+long int depth = INF;
 
 int main(int argc, char* argv[], char* envp[]) {
 
@@ -28,7 +29,7 @@ int main(int argc, char* argv[], char* envp[]) {
 
   const char *opts[]={"-a","-b","-B","-l","-L","-S","--all","--bytes","--block-size=","--count-links","--dereference","--separate-dirs","--max-depth="};
   int opts_size = sizeof(opts)/sizeof(opts[0]);
-  int fd, depth=INF;
+  int fd;
   char* dirpath = (char*)malloc(MAX_DIR_SIZE);
   
   //opens file descriptor to a log of all processes (instant - pid - action - info)
@@ -40,7 +41,7 @@ int main(int argc, char* argv[], char* envp[]) {
   //sets path and sets flags(all,bytes,block_size...) accordingly to the given command
   //the flags still aren't being used for anything
 
-  int dir_index;
+  int dir_index, depth_index = -1;
 
   for(int i = 1 ; i < argc ; i++) {
     if (is_directory(argv[i])) {
@@ -50,6 +51,9 @@ int main(int argc, char* argv[], char* envp[]) {
     else if(validOption(opts,opts_size,argv[i])){
       if (!setOption(argv[i])) {
         exit(2);
+      }
+      if (strncmp(argv[i],"--max-depth=",12) == 0) {
+        depth_index = i;
       }
     }
     else if(strcmp(argv[i-1],"-B") == 0) {
@@ -70,12 +74,14 @@ int main(int argc, char* argv[], char* envp[]) {
     exit(5);
   }
 
-  if (numero_blocos <= 0) {
+  if (numero_blocos <= 0 && block_size) {
     fprintf(stderr, "No value introduced after -B\n");
     exit(6);
   }
 
-  int result = recursive_tree(dirpath, dir_index, argv);
+  //printf("MAXDEPTH: %ld\n", depth);
+
+  int result = recursive_tree(dirpath, dir_index, depth_index, argv);
 
   return 0;
 }

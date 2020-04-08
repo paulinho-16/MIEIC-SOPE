@@ -2,7 +2,7 @@
 
 extern bool all,bytes,block_size,count_links,dereference,separate_dirs,max_depth;
 
-extern long int numero_blocos;
+extern long int numero_blocos, depth;
 
 void print_usage() {
   printf("Usage: ./simpledu directory [options]\n\n");
@@ -21,6 +21,8 @@ bool validOption(const char** optionList, size_t size, char* option){
     if(strcmp(optionList[i], option)==0)
       return true;
     if (strncmp(option,"--block-size=",13) == 0)
+      return true;
+    if (strncmp(option,"--max-depth=",12) == 0)
       return true;
   }
   return false;
@@ -70,6 +72,21 @@ bool setOption(char *option) {
   }
   if(strncmp(option,"--max-depth=",12) == 0) {
     max_depth=true;
+    if (strlen(option) == 12) {
+      fprintf(stderr, "No value introduced after --max-depth=\n");
+      return false;
+    }
+    char maxdepth_string[256];
+    int i;
+    for (i = 0 ; i <= strlen(option) - 13 ; i++) {
+      maxdepth_string[i] = option[12 + i];
+    }
+    maxdepth_string[i] = '\0';
+    depth = (atol(maxdepth_string));
+    if (depth < 0) {
+      fprintf(stderr, "Invalid value introduced after --max-depth=\n");
+      return false;
+    }
     return true;
   }
 
