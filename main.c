@@ -61,11 +61,6 @@ int main(int argc, char* argv[], char* envp[]) {
     printf("No directory input\n");
     exit(3);
   }
-  
-  if (inicial_directory(dirpath) != 0) {
-    perror("inicial_directory");
-    exit(4);
-  }
 
   int result = recursive_tree(dirpath, dir_index, argv);
 

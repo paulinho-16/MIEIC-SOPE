@@ -13,39 +13,8 @@ void explore_directory(char* path, struct dirent *direntp, struct stat *stat_buf
   printf("%-ld\t%s\n",stat_buf->st_blocks/2, path);
 }
 
-int inicial_directory(char* dirpath) {
-  DIR *dirp;
-  struct dirent *direntp;
-  struct stat stat_buf;
-  char* copy = (char *) malloc (strlen(dirpath) - 1);
-
-  strcpy(copy, dirpath);
-  if (strncmp(copy, "./", 2) == 0) {
-    copy = strtok(copy, "./");
-  }
-
-  if((dirp=opendir(".")) == NULL) {
-    perror("opendir ERROR: ");
-    exit(1);
-  }
-
-  while((direntp=readdir(dirp)) != NULL) {
-    if(strcmp(direntp->d_name,copy) == 0) {
-      if(stat(direntp->d_name,&stat_buf) == -1) {
-        perror("stat ERROR");
-        exit(3);
-      }
-      closedir(dirp);
-      return 0;
-    }
-  }
-  closedir(dirp);
-  exit(4);
-}
-
 int recursive_tree(char* dirpath, int dir_index, char** argv) {
   int status;
-  int p1[2],p2[2];
   unsigned long int total_size=0;
 
   DIR *dirp;
@@ -55,11 +24,6 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
   if((dirp=opendir(dirpath)) == NULL) {
     perror("opendir ERROR:");
     exit(2);
-  }
-
-  if(pipe(p1)<0 || pipe(p2)<0){
-    perror("pipe error");
-    exit(5);
   }
 
   while((direntp=readdir(dirp)) != NULL) {
@@ -79,24 +43,39 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
       pid_t new_pid;
       int new_status;
 
-      if(S_ISDIR(stat_buf.st_mode)) { //fazer ciclo recursivo que retorna a soma dos tamanhos dos ficheiros interiores ao diretorio
+      if(S_ISDIR(stat_buf.st_mode)) {
+        int my_pipe[2];
+        
+        if(pipe(my_pipe) < 0) {
+          perror("pipe error");
+          exit(5);
+        }
 
         new_pid = fork();
         if (new_pid == 0) {
+          close(my_pipe[READ]);
+          if (dup2(my_pipe[WRITE], STDIN_FILENO) == -1) {
+            perror("dup2");
+            exit(9);
+          }
           argv[dir_index] = current_path;
           execvp(argv[0], argv);
         }
         else if (new_pid > 0) {
-          int value;
-          close(p1[WRITE]);
-          dup2(p1[READ],STDIN_FILENO);
+          char linha_total[4096];
+          char linha_total2[4096];
+          char* token;
+          int contador;
+          //sleep(1);
+          close(my_pipe[WRITE]);
+          int ret;
+          char buffer[1024];
+          while ((ret = read(my_pipe[READ], buffer, 1024)) > 0) {
+            printf("%s", buffer);
+            token = strtok(buffer, "\t");
+            total_size += atol(token);
+          }
           wait(&status);
-          //waitpid(new_pid, &status, WNOHANG);
-          printf("Child with PID=%d finished with exit code %d\n", new_pid, WEXITSTATUS(status));
-          read(p1[READ],&value,sizeof(value));
-          //printf("read %d to %s\n",value,dirpath);
-          close(p1[READ]);
-          total_size+=value;
         }
         else {
           perror("fork ERROR");
@@ -111,25 +90,34 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
         strcat(current_path, direntp->d_name);
         current_path[strlen(current_path)] = '\0';
         total_size+=stat_buf.st_blocks/2;
-        if(all)
-          explore_file(current_path, direntp, &stat_buf);
+
+        if(all) {
+          char nr_blocks[256];
+          sprintf(nr_blocks, "%ld", stat_buf.st_blocks/2);
+          write(STDIN_FILENO, nr_blocks, sizeof(long int));
+          write(STDIN_FILENO, "\t", 1);
+          write(STDIN_FILENO, current_path, strlen(current_path));
+          write(STDIN_FILENO, "\n", 1);
+          //explore_file(current_path, direntp, &stat_buf);
+        }
       }
     }
   }
 
-  total_size+=4; //standard size of directories
-
-  printf("%-ld\t%s\n",total_size, dirpath);
-
-  if(strcmp(dirpath,".")!=0){
-    close(p2[READ]);
-    dup2(p2[WRITE],STDOUT_FILENO);
-    write(p2[WRITE],&total_size,sizeof(total_size));
-    close(p2[WRITE]);
-    //printf("wrote %ld from %s\n",total_size,dirpath);
+  //standard size of directories
+  if(stat(dirpath, &stat_buf) == -1) {
+    perror("stat ERROR");
+    exit(3);
   }
+  total_size += stat_buf.st_blocks/2;
 
-  printf("FIM DO RECURSIVEEE\n");
+  // aqui tinha um if para ver se nao era hidden directory, temos de ver como funciona
+  // para estes, pq o du mostra... (experimentem com ".")
+  char total[256];
+  char* dados_diretorio = (char*)malloc(strlen(total) + 1 + strlen(dirpath) + 2);
+  sprintf(total, "%ld", total_size);
+  sprintf(dados_diretorio, "%s\t%s\n", total, dirpath);
+  write(STDIN_FILENO, dados_diretorio, strlen(dados_diretorio) + 1);
 
   closedir(dirp);
   exit(0);
