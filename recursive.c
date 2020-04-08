@@ -47,13 +47,24 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
       strcat(current_path, direntp->d_name);
       current_path[strlen(current_path)] = '\0';
 
-      if(stat(current_path, &stat_buf) == -1) {
+      if(lstat(current_path, &stat_buf) == -1) {
         perror("stat ERROR");
         exit(3);
       }
 
       pid_t new_pid;
       int new_status;
+
+      if(S_ISLNK(stat_buf.st_mode)){
+        if (dereference){
+          if(stat(current_path, &stat_buf) == -1) {
+          perror("stat ERROR");
+          exit(3);
+          }
+        }
+        else
+          explore_file(current_path, &stat_buf,&total_size);
+      }
 
       if(S_ISDIR(stat_buf.st_mode)) {
         
