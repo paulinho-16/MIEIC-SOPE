@@ -93,7 +93,8 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
           while ((ret = read(my_pipe[READ], buffer, 1024)) > 0) {
             printf("%s", buffer);
             token = strtok(buffer, "\t");
-            total_size += atol(token);
+            if(!separate_dirs)
+              total_size += atol(token);
           }
 
           close(my_pipe[READ]);
@@ -132,12 +133,13 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
 
   // aqui tinha um if para ver se nao era hidden directory, temos de ver como funciona
   // para estes, pq o du mostra... (experimentem com ".")
+
   char total[256];
   char* dados_diretorio = (char*)malloc(strlen(total) + 1 + strlen(dirpath) + 2);
   sprintf(total, "%ld", total_size);
   sprintf(dados_diretorio, "%s\t%s\n", total, dirpath);
   write(STDIN_FILENO, dados_diretorio, strlen(dados_diretorio) + 1);
-
+  
   closedir(dirp);
   exit(0);
 }
