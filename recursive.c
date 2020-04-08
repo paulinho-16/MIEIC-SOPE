@@ -6,7 +6,7 @@ extern long int numero_blocos;
 extern long int depth;
 
 // Display the Information about a file
-void explore_file(char* path, struct stat *stat_buf, long int *total_size) {
+void explore_file(char* path, struct stat *stat_buf,unsigned long int *total_size) {
   long int shown_size;
   if (bytes) {
     shown_size = stat_buf->st_size;
@@ -44,7 +44,7 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
   }
 
   while((direntp=readdir(dirp)) != NULL) {
-    if(strncmp(direntp->d_name,".",1) != 0) { // not hidden directories
+    if(strcmp(direntp->d_name,".") != 0 && strcmp(direntp->d_name,"..")) { // not hidden directories
 
       char* current_path = (char*)malloc(strlen(dirpath) + 1 + strlen(direntp->d_name));
       strcpy(current_path, dirpath);
@@ -159,7 +159,18 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
   char* dados_diretorio = (char*)malloc(strlen(total) + 1 + strlen(dirpath) + 2);
   sprintf(total, "%ld", total_size);
   sprintf(dados_diretorio, "%s\t%s\n", total, dirpath);
-  write(STDIN_FILENO, dados_diretorio, strlen(dados_diretorio) + 1);
+
+  struct stat buf;
+
+  fstat(STDIN_FILENO,&buf);
+  if(S_ISFIFO(buf.st_mode)){
+    write(STDIN_FILENO, dados_diretorio, strlen(dados_diretorio) + 1);
+    fflush(stdin);
+  }
+  else{
+    write(STDOUT_FILENO, dados_diretorio, strlen(dados_diretorio));
+    fflush(stdout);
+  }
   
   closedir(dirp);
   exit(0);
