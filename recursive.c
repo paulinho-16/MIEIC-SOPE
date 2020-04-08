@@ -3,9 +3,19 @@
 extern bool all,bytes,block_size,count_links,dereference,separate_dirs,max_depth;
 
 // Display the Information about a file
-void explore_file(char* path, struct dirent *direntp, struct stat *stat_buf) {
-  //printf("%-ld\t%s\n",stat_buf->st_size/1024, path);
-  printf("%-ld\t%s\n",stat_buf->st_blocks/2, path);
+void explore_file(char* path, struct stat *stat_buf, long int *total_size) {
+  long int shown_size;
+  if (bytes) {
+    shown_size = stat_buf->st_size;
+  }
+  else {
+    shown_size = stat_buf->st_blocks/2;
+  }
+
+  *total_size += shown_size;
+
+  if (all)
+    printf("%-ld\t%s\n",shown_size, path);
 }
 
 // Display the Information about a directory
@@ -76,9 +86,7 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
           }
 
           close(my_pipe[READ]);
-
           waitpid(-1,&status,0);
-
         }
         else {
           perror("fork ERROR");
@@ -93,11 +101,8 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
           strcat(current_path, "/");
         strcat(current_path, direntp->d_name);
         current_path[strlen(current_path)] = '\0';
-        total_size+=stat_buf.st_blocks/2;
 
-        if(all) {
-          explore_file(current_path, direntp, &stat_buf);
-        }
+        explore_file(current_path, &stat_buf, &total_size);
       }
     }
   }
@@ -107,7 +112,12 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
     perror("stat ERROR");
     exit(3);
   }
-  total_size += stat_buf.st_blocks/2;
+  if (bytes) {
+    total_size += (stat_buf.st_blocks/2) * 1024;
+  }
+  else {
+    total_size += stat_buf.st_blocks/2;
+  }
 
   // aqui tinha um if para ver se nao era hidden directory, temos de ver como funciona
   // para estes, pq o du mostra... (experimentem com ".")

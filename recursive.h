@@ -15,7 +15,7 @@
 #define READ 0
 #define WRITE 1
 
-void explore_file(char* path, struct dirent *direntp, struct stat *stat_buf);
+void explore_file(char* path, struct stat *stat_buf, long int *total_size);
 
 void explore_directory(char* path, struct dirent *direntp, struct stat *stat_buf);
 
