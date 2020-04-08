@@ -15,6 +15,8 @@
 
 bool all=false,bytes=false,block_size=false,count_links=false,dereference=false,separate_dirs=false,max_depth=false;
 
+long int numero_blocos = 0;
+
 int main(int argc, char* argv[], char* envp[]) {
 
   if (argc < 2 || argc > 9) {
@@ -46,20 +48,31 @@ int main(int argc, char* argv[], char* envp[]) {
       dir_index = i;
     }
     else if(validOption(opts,opts_size,argv[i])){
-      setOption(argv[i]);      
+      if (!setOption(argv[i])) {
+        exit(2);
+      }
+    }
+    else if(strcmp(argv[i-1],"-B") == 0) {
+      numero_blocos = atol(argv[i]);
+      if (numero_blocos <= 0) {
+        fprintf(stderr, "Introduced invalid value after -B\n");
+        exit(3);
+      }
     }
     else {
       printf("Invalid Option: %s\n", argv[i]);
-      exit(2);
+      exit(4);
     }
-    /*else if(strcmp(argv[i-1],"-B") != 0){
-      strcpy(dirpath,argv[i]);
-    }*/
   }
 
   if (dirpath[0] == '\0') {
     printf("No directory input\n");
-    exit(3);
+    exit(5);
+  }
+
+  if (numero_blocos <= 0) {
+    fprintf(stderr, "No value introduced after -B\n");
+    exit(6);
   }
 
   int result = recursive_tree(dirpath, dir_index, argv);

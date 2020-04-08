@@ -2,11 +2,16 @@
 
 extern bool all,bytes,block_size,count_links,dereference,separate_dirs,max_depth;
 
+extern long int numero_blocos;
+
 // Display the Information about a file
 void explore_file(char* path, struct stat *stat_buf, long int *total_size) {
   long int shown_size;
   if (bytes) {
     shown_size = stat_buf->st_size;
+  }
+  else if (block_size) {
+    shown_size = ((stat_buf->st_blocks/2) * 1024) / numero_blocos;
   }
   else {
     shown_size = stat_buf->st_blocks/2;
@@ -126,6 +131,9 @@ int recursive_tree(char* dirpath, int dir_index, char** argv) {
   }
   if (bytes) {
     total_size += (stat_buf.st_blocks/2) * 1024;
+  }
+  else if (block_size) {
+    total_size += ((stat_buf.st_blocks/2) * 1024) / numero_blocos;
   }
   else {
     total_size += stat_buf.st_blocks/2;

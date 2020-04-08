@@ -2,12 +2,14 @@
 
 extern bool all,bytes,block_size,count_links,dereference,separate_dirs,max_depth;
 
+extern long int numero_blocos;
+
 void print_usage() {
   printf("Usage: ./simpledu directory [options]\n\n");
   printf("Available Options:\n");
   printf(" -a / --all  -> write counts for all files, not just directories\n");
   printf(" -b / --bytes  -> presents the real number of bytes used by files or directories\n");
-  printf(" -B / --block-size=[SIZE]  -> scale sizes by SIZE before printing them\n");
+  printf(" -B [SIZE] / --block-size=[SIZE]  -> scale sizes by SIZE before printing them\n");
   printf(" -l / --count-links  -> count sizes many times if hard linked\n");
   printf(" -L / --dereference  -> dereference all symbolic links\n");
   printf(" -S / --separate-dirs  -> for directories do not include size of subdirectories\n");
@@ -17,6 +19,8 @@ void print_usage() {
 bool validOption(const char** optionList, size_t size, char* option){
   for(int i = 0; i < size; i++) {
     if(strcmp(optionList[i], option)==0)
+      return true;
+    if (strncmp(option,"--block-size=",13) == 0)
       return true;
   }
   return false;
@@ -31,8 +35,25 @@ bool setOption(char *option) {
     bytes=true;
     return true;
   }
-  if(strcmp(option,"-B") == 0 || strncmp(option,"--block-size=",14) == 0) {
+  if(strcmp(option,"-B") == 0 || strncmp(option,"--block-size=",13) == 0) {
     block_size=true;
+    if (strncmp(option,"--block-size=",13) == 0) {
+      if (strlen(option) == 13) {
+        fprintf(stderr, "No value introduced after --block-size=\n");
+        return false;
+      }
+      char block_string[256];
+      int i;
+      for (i = 0 ; i <= strlen(option) - 14 ; i++) {
+        block_string[i] = option[13 + i];
+      }
+      block_string[i] = '\0';
+      numero_blocos = (atol(block_string));
+      if (numero_blocos <= 0) {
+        fprintf(stderr, "Invalid value introduced after --block-size=\n");
+        return false;
+      }
+    }
     return true;
   }
   if(strcmp(option,"-l") == 0 || strcmp(option,"--count-links") == 0) {
