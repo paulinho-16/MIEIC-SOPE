@@ -46,7 +46,7 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
   while((direntp=readdir(dirp)) != NULL) {
     if(strcmp(direntp->d_name,".") != 0 && strcmp(direntp->d_name,"..")) { // not hidden directories
 
-      char* current_path = (char*)malloc(strlen(dirpath) + 1 + strlen(direntp->d_name));
+      char* current_path = (char*)malloc(strlen(dirpath) + 1 + strlen(direntp->d_name) + 1);
       strcpy(current_path, dirpath);
       if(current_path[strlen(dirpath)-1]!='/')
         strcat(current_path, "/");
