@@ -4,25 +4,27 @@ static struct timeval beginTime;
 bool existsLog = true;
 int myLog;
 
+float begin;
 
 float currentTime()
 {
     struct timeval thisTime;
     gettimeofday(&thisTime, NULL);
-    return (thisTime.tv_usec - beginTime.tv_usec)/1000+(thisTime.tv_sec - beginTime.tv_sec)*1000;
+    return thisTime.tv_usec/1000 + thisTime.tv_sec*1000 - begin;
 
 }
 
 
 int initLog(int argc, char* argv[]){
 
-    int beginTimeFile;
-
-    if (*getenv("FATHER_PID") == getpid())
+    if (atoi(getenv("FATHER_PID")) == getpid()) //changed
     {
-        char *logFileName = getenv("LOG_FILENAME");
-        char *beginTimeFileName = getenv("BEGINTIME_FILENAME");
-        char *infoParameter;
+        char *logFileName = (char*)malloc(strlen(getenv("LOG_FILENAME"))+ 1); 
+        
+        logFileName = getenv("LOG_FILENAME");
+        char *infoParameter;// = (char*)malloc(300);
+
+        char* beginString; //= (char*)malloc(300); 
 
         if(logFileName == NULL)
         {
@@ -41,20 +43,22 @@ int initLog(int argc, char* argv[]){
 
         gettimeofday(&beginTime, NULL);
 
-        if((beginTimeFile = open(beginTimeFileName, O_WRONLY | O_CREAT | O_TRUNC | O_SYNC, S_IRUSR | S_IWUSR)) < 0) 
+        begin=beginTime.tv_usec/1000 + beginTime.tv_sec*1000;
+
+        if(putenv("BEGIN_TIME")<0)
         {
-            fprintf(stderr, "unable to open beginTime file\n");
+            fprintf(stderr, "unable to create env variable\n");
             return -1;
         }
 
-        if (write(beginTimeFile, &beginTime, sizeof(struct timeval))<0)
+        
+        sprintf(beginString,"%f",begin);
+
+        if(setenv("BEGIN_TIME",beginString,1)<0)
         {
-            fprintf(stderr, "unable to write to beginTime file\n");
+            fprintf(stderr, "unable to set env variable\n");
             return -1;
         }
-
-        close(beginTimeFile);
-
 
         for(int i=0;i<argc-1;i++)
         {
@@ -65,16 +69,16 @@ int initLog(int argc, char* argv[]){
 
         writeLog("CREATE", infoParameter);
 
-        free(logFileName);
-        free(beginTimeFileName); 
 
     }
 
     else 
     {
-        char *logFileName = getenv("LOG_FILENAME");
-        char *beginTimeFileName = getenv("BEGINTIME_FILENAME");
-        char *infoParameter;
+        char *logFileName = (char*)malloc(strlen(getenv("LOG_FILENAME"))+ 1); 
+    
+        char *infoParameter; // = (char*)malloc(300);
+
+        logFileName = getenv("LOG_FILENAME");
 
         if(logFileName == NULL)
         {
@@ -88,19 +92,10 @@ int initLog(int argc, char* argv[]){
             return -1;
         }
 
-        if((beginTimeFile = open(beginTimeFileName, O_RDONLY, S_IRUSR | S_IWUSR)) < 0) 
-        {
-            fprintf(stderr, "unable to open beginTime file\n");
-            return -1;
-        }
 
-        if (read(beginTimeFile, &beginTime, sizeof(struct timeval))<0)
-        {
-            fprintf(stderr, "unable to read from beginTime file\n");
-            return -1;
-        }
+        begin = atof(getenv("BEGIN_TIME"));
 
-        close(beginTimeFile);
+  
 
         for(int i=0;i<argc-1;i++)
         {
@@ -111,8 +106,6 @@ int initLog(int argc, char* argv[]){
 
         writeLog("CREATE", infoParameter);
 
-        free(logFileName);
-        free(beginTimeFileName); 
     }
 
 
