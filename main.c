@@ -79,9 +79,9 @@ int main(int argc, char* argv[], char* envp[]) {
     exit(6);
   }
 
-  //printf("MAXDEPTH: %ld\n", depth);
-
   int result = recursive_tree(dirpath, dir_index, depth_index, argv);
+
+  free(dirpath);
 
   return 0;
 }

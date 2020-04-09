@@ -68,8 +68,10 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
           exit(3);
           }
         }
-        else
+        else {
           explore_file(current_path, &stat_buf,&total_size);
+        }
+        free(current_path);
       }
 
       if(S_ISDIR(stat_buf.st_mode)) {
@@ -96,7 +98,6 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
             sprintf(depth_string, "%ld", depth);
             strcpy(new_depth, "--max-depth=");
             strcat(new_depth, depth_string);
-            //printf("NEW DEPTH: %s\n", new_depth);
             argv[depth_index] = new_depth;
           }
           execvp(argv[0], argv);
@@ -125,12 +126,12 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
       }
 
       if(S_ISREG(stat_buf.st_mode)) {
-        char* current_path = (char*)malloc(strlen(dirpath) + 1 + strlen(direntp->d_name));
+        /*char* current_path = (char*)malloc(strlen(dirpath) + 1 + strlen(direntp->d_name));
         strcpy(current_path, dirpath);
         if(current_path[strlen(dirpath)-1]!='/')
           strcat(current_path, "/");
         strcat(current_path, direntp->d_name);
-        current_path[strlen(current_path)] = '\0';
+        current_path[strlen(current_path)] = '\0';*/
 
         explore_file(current_path, &stat_buf, &total_size);
       }
@@ -172,6 +173,8 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
     fflush(stdout);
   }
   
+  free(dados_diretorio);
+
   closedir(dirp);
   exit(0);
 }
