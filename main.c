@@ -9,6 +9,8 @@
 
 #include "utils.h"
 #include "recursive.h"
+#include "log.h"
+#include "signal_handlers.h"
 
 #define INF 99999
 #define MAX_DIR_SIZE 256
@@ -24,6 +26,25 @@ int main(int argc, char* argv[], char* envp[]) {
     print_usage();
     exit(1);
   }
+
+  if (getenv("FATHER_PID") == NULL)
+  {
+    if(putenv("FATHER_PID")<0) {
+      fprintf(stderr, "Unable to create environment variable\n");
+      exit(1);
+    }
+
+    char* fatherPid = (char *)malloc(sizeof(int));
+    sprintf(fatherPid,"%d", getpid());
+
+    if(setenv("FATHER_PID", fatherPid,1)<0)
+    {
+      fprintf(stderr, "unable to set father PID\n");
+      exit(1);
+    }
+  }
+
+  initLog(argc, argv);
 
   setenv("LOG_FILENAME","log.txt",1);
 
