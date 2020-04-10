@@ -1,34 +1,45 @@
 #include "log.h"
 
-static struct timeval beginTime;
+static struct timespec beginTime;
+clock_t begin_time;
 bool existsLog = true;
 int myLog;
 
 float begin;
+//clock_t begin;
 
 float currentTime()
 {
-    struct timeval thisTime;
-    gettimeofday(&thisTime, NULL);
-    return thisTime.tv_usec/1000 + thisTime.tv_sec*1000 - begin;
-
+    struct timespec thisTime;
+    clock_gettime(CLOCK_MONOTONIC, &thisTime);
+    /*gettimeofday(&thisTime, NULL);
+    float end = thisTime.tv_usec/1000.0 + thisTime.tv_sec*1000;*/
+    //clock_t end = clock();
+    float end = (thisTime.tv_nsec/1000000000.0 + thisTime.tv_sec)*1000.0;
+    //printf("BEGIN: %f\n", begin);
+    //printf("ATUAL: %f\n", end);
+    return (float) end-begin;
+    //long seconds = thisTime.tv_sec - beginTime.tv_sec;
+    //long micros = ((seconds*1000000) + thisTime.tv_usec) - beginTime.tv_usec;
 }
 
 
-int initLog(int argc, char* argv[]){
+int initLog(int argc, char* argv[]) {
 
-    if (atoi(getenv("FATHER_PID")) == getpid()) //changed
+    if (atoi(getenv("FATHER_PID")) == getpid())
     {
         char *logFileName = (char*)malloc(strlen(getenv("LOG_FILENAME"))+ 1); 
         
         logFileName = getenv("LOG_FILENAME");
-        char *infoParameter;// = (char*)malloc(300);
 
-        char* beginString; //= (char*)malloc(300); 
+        //printf("LOG_FILENAME: %s\n", logFileName);
+
+        char *infoParameter = (char*)malloc(300);
+
+        char* beginString = (char*)malloc(sizeof(float)); 
 
         if(logFileName == NULL)
         {
-
             existsLog = false;
             return 0;
         }
@@ -40,19 +51,24 @@ int initLog(int argc, char* argv[]){
             return -1;
         }
 
+        //gettimeofday(&beginTime, NULL);
+        clock_gettime(CLOCK_MONOTONIC, &beginTime);
+        //begin = clock();
 
-        gettimeofday(&beginTime, NULL);
+        begin = (beginTime.tv_nsec/1000000000.0 + beginTime.tv_sec)*1000.0;
+        //begin = beginTime.tv_usec/1000.0 + beginTime.tv_sec*1000;
 
-        begin=beginTime.tv_usec/1000 + beginTime.tv_sec*1000;
-
-        if(putenv("BEGIN_TIME")<0)
-        {
-            fprintf(stderr, "unable to create env variable\n");
-            return -1;
+        if (getenv("BEGIN_TIME") == NULL) {
+            if(putenv("BEGIN_TIME")<0)
+            {
+                fprintf(stderr, "unable to create env variable\n");
+                return -1;
+            }
         }
-
         
         sprintf(beginString,"%f",begin);
+
+        //printf("beginSTRING: %s\n", beginString);
 
         if(setenv("BEGIN_TIME",beginString,1)<0)
         {
@@ -67,16 +83,16 @@ int initLog(int argc, char* argv[]){
         }
         strcat(infoParameter,argv[argc-1]);
 
+        //printf("infoParameter: %s\n", infoParameter);
+
         writeLog("CREATE", infoParameter);
-
-
     }
 
     else 
     {
         char *logFileName = (char*)malloc(strlen(getenv("LOG_FILENAME"))+ 1); 
     
-        char *infoParameter; // = (char*)malloc(300);
+        char *infoParameter = (char*)malloc(300);
 
         logFileName = getenv("LOG_FILENAME");
 
@@ -94,9 +110,8 @@ int initLog(int argc, char* argv[]){
 
 
         begin = atof(getenv("BEGIN_TIME"));
-
+        //begin = clock();
   
-
         for(int i=0;i<argc-1;i++)
         {
             strcat(infoParameter,argv[i]);
@@ -107,8 +122,6 @@ int initLog(int argc, char* argv[]){
         writeLog("CREATE", infoParameter);
 
     }
-
-
 }
 
 
@@ -117,10 +130,15 @@ int writeLog(char * action,char* info)
 {
     if(existsLog)
     {
-        char* logLine = (char *)malloc(sizeof(float) + 3 + sizeof(int) + 3 + strlen(action) + 3 + strlen(info) + 1);
-        int size = sprintf(logLine, "%f - %d - %s - %s \n", currentTime(), getpid(), action, info);
+        //char* logLine = (char *)malloc(sizeof(float) + 3 + sizeof(int) + 3 + strlen(action) + 3 + strlen(info) + 3);
+        char logLine[256];
+        int size = sprintf(logLine, "%.2f - %.8d - %s - %s \n", currentTime(), getpid(), action, info);
+        /*printf("Action: %s\n", action);
+        printf("INFO: %s\n", info);
 
-        if (write(myLog, &logLine, size)<0)
+        printf("SIZE: %s\n", logLine);*/
+
+        if (write(myLog, logLine, strlen(logLine))<0)
         {
             fprintf(stderr, "unable to write to log file\n");
 		    return -1;
@@ -135,12 +153,9 @@ int closeLog()
     {
         if(close(myLog) != 0)
         {
-
             fprintf(stderr, "unable to close log\n");
             return -1;
         }
-
     }
-
     return 0;
 }

@@ -126,12 +126,6 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
       }
 
       if(S_ISREG(stat_buf.st_mode)) {
-        /*char* current_path = (char*)malloc(strlen(dirpath) + 1 + strlen(direntp->d_name));
-        strcpy(current_path, dirpath);
-        if(current_path[strlen(dirpath)-1]!='/')
-          strcat(current_path, "/");
-        strcat(current_path, direntp->d_name);
-        current_path[strlen(current_path)] = '\0';*/
 
         explore_file(current_path, &stat_buf, &total_size);
       }

@@ -1,0 +1,6 @@
+0.00 - 00024110 - CREATE - ./simpledu -l ./Testar 
+6.00 - 00024111 - CREATE - ./simpledu -l ./Testar/D1 
+10.00 - 00024112 - CREATE - ./simpledu -l ./Testar/D1/Db 
+14.00 - 00024113 - CREATE - ./simpledu -l ./Testar/D1/Db/Dx 
+18.00 - 00024114 - CREATE - ./simpledu -l ./Testar/D1/Da 
+22.00 - 00024115 - CREATE - ./simpledu -l ./Testar/D2 

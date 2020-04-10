@@ -44,9 +44,9 @@ int main(int argc, char* argv[], char* envp[]) {
     }
   }
 
-  initLog(argc, argv);
-
   setenv("LOG_FILENAME","log.txt",1);
+
+  initLog(argc, argv);
 
   const char *opts[]={"-a","-b","-B","-l","-L","-S","--all","--bytes","--block-size=","--count-links","--dereference","--separate-dirs","--max-depth="};
   int opts_size = sizeof(opts)/sizeof(opts[0]);
