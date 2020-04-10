@@ -65,8 +65,6 @@ int initLog(int argc, char* argv[]) {
                 return -1;
             }
         }
-        
-        printf("BEGIN: %f\n", begin);
 
         sprintf(beginString,"%f",begin);
 

@@ -3,3 +3,4 @@ aaa/
 bb/
 *.o
 simpledu
+*.test

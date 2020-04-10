@@ -71,7 +71,6 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
         else {
           explore_file(current_path, &stat_buf,&total_size);
         }
-        free(current_path);
       }
 
       if(S_ISDIR(stat_buf.st_mode)) {

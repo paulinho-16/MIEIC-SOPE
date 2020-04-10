@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Unit Tests
+
+n=0
+
+echo -n Test 1:
+(./simpledu -l . || echo $?) | sort -k2 > test1_simpledu.test
+(du -l . || echo $?) | sort -k2 > test1_du.test
+diff -q test1_du.test test1_simpledu.test > /dev/null 2>&1 && echo OK && let "n++" || echo FAILED
+
+
+echo -n Test 2:
+(./simpledu -l . -b || echo $?) | sort -k2 > test2_simpledu.test
+(du -l . -b || echo $?) | sort -k2 > test2_du.test
+diff -q test2_du.test test2_simpledu.test > /dev/null 2>&1 && echo OK && let "n++" || echo FAILED 
+
+
+echo -n Test 3:
+(./simpledu -l . -b -S || echo $?) | sort -k2 > test3_simpledu.test
+(du -l . -b -S || echo $?) | sort -k2 > test3_du.test
+diff -q test3_du.test test3_simpledu.test > /dev/null 2>&1 && echo OK && let "n++" || echo FAILED
+
+
+echo -n Test 4:
+(./simpledu -l . -b -S --max-depth=2 || echo $?) | sort -k2 > test4_simpledu.test
+(du -l . -b -S --max-depth=2 || echo $?) | sort -k2 > test4_du.test
+diff -q test4_du.test test4_simpledu.test > /dev/null 2>&1 && echo OK && let "n++" || echo FAILED
+
+
+echo -n Test 5:
+(./simpledu -l . -B 1  || echo $?) | sort -k2 > test5_simpledu.test
+(du -l . -B 1 || echo $?) | sort -k2 > test5_du.test
+diff -q test5_du.test test5_simpledu.test > /dev/null 2>&1 && echo OK && let "n++" || echo FAILED
+
+
+echo -n Test 6:
+(./simpledu -l ./Testar -a || echo $?) | sort -k2 > test6_simpledu.test
+(du -l ./Testar -a || echo $?) | sort -k2 > test6_du.test
+diff -q test6_du.test test6_simpledu.test > /dev/null 2>&1 && echo OK && let "n++" || echo FAILED
+
+
+echo -n Test 7:
+(./simpledu -l ./Testar -a -L || echo $?) | sort -k2 > test7_simpledu.test
+(du -l ./Testar -a -L || echo $?) | sort -k2 > test7_du.test
+diff -q test7_du.test test7_simpledu.test > /dev/null 2>&1 && echo OK && let "n++" || echo FAILED
+
+echo
+echo Passed $n/7 Tests
