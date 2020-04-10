@@ -1,6 +1,6 @@
 #ifndef SIGNAL_HANDLERS_H
 #define SIGNAL_HANDLERS_H
-#define _XOPEN_SOURCE
+//#define _XOPEN_SOURCE
 
 #include <signal.h>
 #include <stdlib.h>

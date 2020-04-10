@@ -55,13 +55,11 @@ int main(int argc, char* argv[], char* envp[]) {
   char* dirpath = (char*)malloc(MAX_DIR_SIZE);
   
   //opens file descriptor to a log of all processes (instant - pid - action - info)
-  //nothing is being written to log yet
   if(fd=open(getenv("LOG_FILENAME"),O_CREAT | O_WRONLY | O_APPEND ,0644)<0)
     perror("Error opening fd");
 
 
   //sets path and sets flags(all,bytes,block_size...) accordingly to the given command
-  //the flags still aren't being used for anything
 
   int dir_index, depth_index = -1;
 
