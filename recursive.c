@@ -82,7 +82,16 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
 
         new_pid = fork();
         if (new_pid == 0) {
-          setgid(getppid()); 
+          if(getppid()==atoi(getenv("FATHER_PID"))){
+            char* pid = (char *)malloc(sizeof(int));
+            sprintf(pid,"%d", getpid());
+
+            setenv("GROUP_ID",pid,1);
+            free(pid);
+          }
+          else
+            setgid(atoi(getenv("GROUP_ID")));
+          
           close(my_pipe[READ]);
           if (dup2(my_pipe[WRITE], STDIN_FILENO) == -1) {
             perror("dup2");

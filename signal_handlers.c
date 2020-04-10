@@ -34,9 +34,20 @@ void initSignals(){
 }
 
 void sigint_handler(int signo){
-    kill(0,SIGSTOP);
-    printf("Terminate program ?(y/n):\n");
-    exit(3);
+    printf("Terminate program ?(y/n):");
+    kill(-atoi(getenv("GROUP_ID")),SIGSTOP);
+    int st;
+    
+    int c = getchar();
+
+    if(c=='y'){
+        kill(-atoi(getenv("GROUP_ID")),SIGTERM);
+        waitpid(-1,&st,0);
+        exit(0);
+    }
+    else if(c=='n'){
+        kill(-atoi(getenv("GROUP_ID")),SIGCONT);
+    }
 }
 
 void sigcont_handler(int signo){

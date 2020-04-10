@@ -1,32 +1,29 @@
-0.01 - 00022213 - CREATE - ./simpledu -l ./Testar -a -L 
-56.68 - 00022214 - CREATE - ./simpledu -l ./Testar/D1 -a -L 
-101.44 - 00022215 - CREATE - ./simpledu -l ./Testar/D1/Da -a -L 
-144.96 - 00022215 - RECV_PIPE - 8	./Testar/D1/Da\n 
-145.06 - 00022214 - ENTRY - 8	./Testar/D1/Da\n 
-200.34 - 00022214 - SEND_PIPE - 8	./Testar/D1/Da\n 
-244.96 - 00022215 - EXIT - 0 
-290.69 - 00022216 - CREATE - ./simpledu -l ./Testar/D1/Db -a -L 
-324.55 - 00022217 - CREATE - ./simpledu -l ./Testar/D1/Db/Dx -a -L 
-359.65 - 00022218 - CREATE - ./simpledu -l ./Testar/D1/Db/Dx/smblnk -a -L 
-402.95 - 00022218 - RECV_PIPE - 12	./Testar/D1/Db/Dx/smblnk\n 
-403.01 - 00022217 - ENTRY - 12	./Testar/D1/Db/Dx/smblnk\n 
-447.26 - 00022217 - SEND_PIPE - 12	./Testar/D1/Db/Dx/smblnk\n 
-491.95 - 00022218 - EXIT - 0 
-536.62 - 00022217 - RECV_PIPE - 252	./Testar/D1/Db/Dx\n 
-536.69 - 00022216 - ENTRY - 252	./Testar/D1/Db/Dx\n 
-581.10 - 00022216 - SEND_PIPE - 252	./Testar/D1/Db/Dx\n 
-625.72 - 00022217 - EXIT - 0 
-670.39 - 00022216 - RECV_PIPE - 264	./Testar/D1/Db\n 
-670.46 - 00022214 - ENTRY - 264	./Testar/D1/Db\n 
-714.87 - 00022214 - SEND_PIPE - 264	./Testar/D1/Db\n 
-759.52 - 00022216 - EXIT - 0 
-803.99 - 00022214 - RECV_PIPE - 280	./Testar/D1\n 
-804.04 - 00022213 - ENTRY - 280	./Testar/D1\n 
-848.55 - 00022213 - SEND_PIPE - 280	./Testar/D1\n 
-893.22 - 00022214 - EXIT - 0 
-939.17 - 00022220 - CREATE - ./simpledu -l ./Testar/D2 -a -L 
-982.68 - 00022220 - RECV_PIPE - 12	./Testar/D2\n 
-982.75 - 00022213 - ENTRY - 12	./Testar/D2\n 
-1026.97 - 00022213 - SEND_PIPE - 12	./Testar/D2\n 
-1071.49 - 00022220 - EXIT - 0 
-1116.22 - 00022213 - EXIT - 0 
+0.03 - 00026457 - CREATE - ./simpledu / 
+38.75 - 00026458 - CREATE - ./simpledu /root 
+82.14 - 00026458 - EXIT - 2 
+127.45 - 00026459 - CREATE - ./simpledu /lost+found 
+171.21 - 00026459 - EXIT - 2 
+216.58 - 00026460 - CREATE - ./simpledu /cdrom 
+260.14 - 00026460 - RECV_PIPE - 4	/cdrom\n 
+260.19 - 00026457 - ENTRY - 4	/cdrom\n 
+304.66 - 00026457 - SEND_PIPE - 4	/cdrom\n 
+349.24 - 00026460 - EXIT - 0 
+395.06 - 00026461 - CREATE - ./simpledu /usr 
+439.96 - 00026462 - CREATE - ./simpledu /usr/local 
+484.57 - 00026463 - CREATE - ./simpledu /usr/local/share 
+529.27 - 00026464 - CREATE - ./simpledu /usr/local/share/fonts 
+572.46 - 00026464 - RECV_PIPE - 4	/usr/local/share/fonts\n 
+572.60 - 00026463 - ENTRY - 4	/usr/local/share/fonts\n 
+616.74 - 00026463 - SEND_PIPE - 4	/usr/local/share/fonts\n 
+661.51 - 00026464 - EXIT - 0 
+707.49 - 00026465 - CREATE - ./simpledu /usr/local/share/emacs 
+752.37 - 00026466 - CREATE - ./simpledu /usr/local/share/emacs/site-lisp 
+796.89 - 00026466 - RECV_PIPE - 4	/usr/local/share/emacs/site-lisp\n 
+796.94 - 00026465 - ENTRY - 4	/usr/local/share/emacs/site-lisp\n 
+841.46 - 00026465 - SEND_PIPE - 4	/usr/local/share/emacs/site-lisp\n 
+886.08 - 00026466 - EXIT - 0 
+930.71 - 00026465 - RECV_PIPE - 8	/usr/local/share/emacs\n 
+930.81 - 00026463 - ENTRY - 8	/usr/local/share/emacs\n 
+975.21 - 00026463 - SEND_PIPE - 8	/usr/local/share/emacs\n 
+1019.90 - 00026465 - EXIT - 0 
+1065.18 - 00026467 - CREATE - ./simpledu /usr/local/share/sgml 

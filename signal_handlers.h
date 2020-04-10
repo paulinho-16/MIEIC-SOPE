@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <wait.h>
 
 void initSignals();
 void sigint_handler(int signo);
