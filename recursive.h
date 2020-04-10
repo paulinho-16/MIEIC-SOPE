@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include "utils.h"
 #include "log.h"
+#include "signal_handlers.h"
 
 #define READ 0
 #define WRITE 1
