@@ -1,158 +1,32 @@
-0.01 - 00028359 - CREATE - ./simpledu -l . -a -L 
-7.42 - 00028360 - CREATE - ./simpledu -l ./.git -a -L 
-12.91 - 00028361 - CREATE - ./simpledu -l ./.git/info -a -L 
-17.14 - 00028362 - CREATE - ./simpledu -l ./.git/logs -a -L 
-21.00 - 00028363 - CREATE - ./simpledu -l ./.git/logs/refs -a -L 
-25.01 - 00028364 - CREATE - ./simpledu -l ./.git/logs/refs/remotes -a -L 
-29.33 - 00028365 - CREATE - ./simpledu -l ./.git/logs/refs/remotes/origin -a -L 
-33.40 - 00028366 - CREATE - ./simpledu -l ./.git/logs/refs/heads -a -L 
-37.45 - 00028367 - CREATE - ./simpledu -l ./.git/branches -a -L 
-41.19 - 00028368 - CREATE - ./simpledu -l ./.git/hooks -a -L 
-45.09 - 00028369 - CREATE - ./simpledu -l ./.git/objects -a -L 
-49.11 - 00028370 - CREATE - ./simpledu -l ./.git/objects/f4 -a -L 
-53.28 - 00028371 - CREATE - ./simpledu -l ./.git/objects/info -a -L 
-57.54 - 00028372 - CREATE - ./simpledu -l ./.git/objects/b5 -a -L 
-61.78 - 00028373 - CREATE - ./simpledu -l ./.git/objects/29 -a -L 
-66.44 - 00028374 - CREATE - ./simpledu -l ./.git/objects/78 -a -L 
-70.65 - 00028375 - CREATE - ./simpledu -l ./.git/objects/2d -a -L 
-74.84 - 00028376 - CREATE - ./simpledu -l ./.git/objects/ed -a -L 
-82.84 - 00028377 - CREATE - ./simpledu -l ./.git/objects/c0 -a -L 
-87.74 - 00028378 - CREATE - ./simpledu -l ./.git/objects/4d -a -L 
-92.08 - 00028379 - CREATE - ./simpledu -l ./.git/objects/a8 -a -L 
-96.24 - 00028380 - CREATE - ./simpledu -l ./.git/objects/45 -a -L 
-100.39 - 00028381 - CREATE - ./simpledu -l ./.git/objects/aa -a -L 
-108.59 - 00028382 - CREATE - ./simpledu -l ./.git/objects/06 -a -L 
-112.54 - 00028383 - CREATE - ./simpledu -l ./.git/objects/89 -a -L 
-116.80 - 00028384 - CREATE - ./simpledu -l ./.git/objects/8a -a -L 
-121.18 - 00028385 - CREATE - ./simpledu -l ./.git/objects/41 -a -L 
-125.37 - 00028386 - CREATE - ./simpledu -l ./.git/objects/a3 -a -L 
-129.76 - 00028387 - CREATE - ./simpledu -l ./.git/objects/f9 -a -L 
-134.03 - 00028388 - CREATE - ./simpledu -l ./.git/objects/e6 -a -L 
-138.33 - 00028389 - CREATE - ./simpledu -l ./.git/objects/84 -a -L 
-142.83 - 00028390 - CREATE - ./simpledu -l ./.git/objects/e9 -a -L 
-147.32 - 00028391 - CREATE - ./simpledu -l ./.git/objects/e8 -a -L 
-151.69 - 00028392 - CREATE - ./simpledu -l ./.git/objects/af -a -L 
-155.88 - 00028393 - CREATE - ./simpledu -l ./.git/objects/a9 -a -L 
-163.34 - 00028394 - CREATE - ./simpledu -l ./.git/objects/82 -a -L 
-167.89 - 00028395 - CREATE - ./simpledu -l ./.git/objects/7f -a -L 
-172.66 - 00028396 - CREATE - ./simpledu -l ./.git/objects/73 -a -L 
-176.91 - 00028397 - CREATE - ./simpledu -l ./.git/objects/e4 -a -L 
-180.92 - 00028398 - CREATE - ./simpledu -l ./.git/objects/a2 -a -L 
-185.13 - 00028399 - CREATE - ./simpledu -l ./.git/objects/1c -a -L 
-189.23 - 00028400 - CREATE - ./simpledu -l ./.git/objects/df -a -L 
-193.63 - 00028401 - CREATE - ./simpledu -l ./.git/objects/4e -a -L 
-198.19 - 00028402 - CREATE - ./simpledu -l ./.git/objects/6a -a -L 
-202.26 - 00028403 - CREATE - ./simpledu -l ./.git/objects/pack -a -L 
-206.39 - 00028404 - CREATE - ./simpledu -l ./.git/objects/43 -a -L 
-210.53 - 00028405 - CREATE - ./simpledu -l ./.git/objects/50 -a -L 
-218.69 - 00028406 - CREATE - ./simpledu -l ./.git/objects/85 -a -L 
-223.18 - 00028407 - CREATE - ./simpledu -l ./.git/objects/3e -a -L 
-227.71 - 00028408 - CREATE - ./simpledu -l ./.git/objects/3c -a -L 
-231.84 - 00028409 - CREATE - ./simpledu -l ./.git/objects/94 -a -L 
-236.06 - 00028410 - CREATE - ./simpledu -l ./.git/objects/a1 -a -L 
-240.20 - 00028411 - CREATE - ./simpledu -l ./.git/objects/c9 -a -L 
-244.42 - 00028412 - CREATE - ./simpledu -l ./.git/objects/5c -a -L 
-248.70 - 00028413 - CREATE - ./simpledu -l ./.git/objects/bb -a -L 
-253.18 - 00028414 - CREATE - ./simpledu -l ./.git/objects/de -a -L 
-261.58 - 00028415 - CREATE - ./simpledu -l ./.git/objects/c6 -a -L 
-265.75 - 00028416 - CREATE - ./simpledu -l ./.git/objects/15 -a -L 
-269.76 - 00028417 - CREATE - ./simpledu -l ./.git/objects/32 -a -L 
-273.59 - 00028418 - CREATE - ./simpledu -l ./.git/objects/9c -a -L 
-277.65 - 00028419 - CREATE - ./simpledu -l ./.git/objects/35 -a -L 
-286.54 - 00028420 - CREATE - ./simpledu -l ./.git/objects/24 -a -L 
-290.76 - 00028421 - CREATE - ./simpledu -l ./.git/objects/bd -a -L 
-295.39 - 00028422 - CREATE - ./simpledu -l ./.git/objects/60 -a -L 
-299.89 - 00028423 - CREATE - ./simpledu -l ./.git/objects/10 -a -L 
-304.13 - 00028424 - CREATE - ./simpledu -l ./.git/objects/62 -a -L 
-308.05 - 00028425 - CREATE - ./simpledu -l ./.git/objects/95 -a -L 
-312.07 - 00028426 - CREATE - ./simpledu -l ./.git/objects/a4 -a -L 
-316.13 - 00028427 - CREATE - ./simpledu -l ./.git/objects/5b -a -L 
-320.15 - 00028428 - CREATE - ./simpledu -l ./.git/objects/f8 -a -L 
-323.91 - 00028429 - CREATE - ./simpledu -l ./.git/objects/6b -a -L 
-327.87 - 00028430 - CREATE - ./simpledu -l ./.git/objects/f7 -a -L 
-331.92 - 00028431 - CREATE - ./simpledu -l ./.git/objects/0f -a -L 
-340.18 - 00028432 - CREATE - ./simpledu -l ./.git/objects/90 -a -L 
-348.46 - 00028433 - CREATE - ./simpledu -l ./.git/objects/37 -a -L 
-353.39 - 00028434 - CREATE - ./simpledu -l ./.git/objects/ca -a -L 
-357.48 - 00028435 - CREATE - ./simpledu -l ./.git/objects/38 -a -L 
-361.54 - 00028436 - CREATE - ./simpledu -l ./.git/objects/64 -a -L 
-365.84 - 00028437 - CREATE - ./simpledu -l ./.git/objects/fc -a -L 
-369.53 - 00028438 - CREATE - ./simpledu -l ./.git/objects/92 -a -L 
-373.32 - 00028439 - CREATE - ./simpledu -l ./.git/objects/ab -a -L 
-377.58 - 00028440 - CREATE - ./simpledu -l ./.git/objects/0c -a -L 
-381.59 - 00028441 - CREATE - ./simpledu -l ./.git/objects/96 -a -L 
-385.99 - 00028442 - CREATE - ./simpledu -l ./.git/objects/05 -a -L 
-393.96 - 00028443 - CREATE - ./simpledu -l ./.git/objects/be -a -L 
-398.11 - 00028444 - CREATE - ./simpledu -l ./.git/objects/3a -a -L 
-402.55 - 00028445 - CREATE - ./simpledu -l ./.git/objects/f6 -a -L 
-407.41 - 00028446 - CREATE - ./simpledu -l ./.git/objects/74 -a -L 
-412.48 - 00028447 - CREATE - ./simpledu -l ./.git/objects/58 -a -L 
-416.82 - 00028448 - CREATE - ./simpledu -l ./.git/objects/81 -a -L 
-420.84 - 00028449 - CREATE - ./simpledu -l ./.git/objects/70 -a -L 
-425.20 - 00028450 - CREATE - ./simpledu -l ./.git/objects/40 -a -L 
-429.22 - 00028451 - CREATE - ./simpledu -l ./.git/objects/b7 -a -L 
-433.20 - 00028452 - CREATE - ./simpledu -l ./.git/objects/7d -a -L 
-437.13 - 00028453 - CREATE - ./simpledu -l ./.git/objects/49 -a -L 
-441.09 - 00028454 - CREATE - ./simpledu -l ./.git/objects/f5 -a -L 
-445.36 - 00028455 - CREATE - ./simpledu -l ./.git/objects/9a -a -L 
-453.80 - 00028456 - CREATE - ./simpledu -l ./.git/objects/2a -a -L 
-458.05 - 00028457 - CREATE - ./simpledu -l ./.git/objects/6f -a -L 
-462.35 - 00028458 - CREATE - ./simpledu -l ./.git/objects/91 -a -L 
-466.74 - 00028459 - CREATE - ./simpledu -l ./.git/objects/fe -a -L 
-470.98 - 00028460 - CREATE - ./simpledu -l ./.git/objects/86 -a -L 
-474.80 - 00028461 - CREATE - ./simpledu -l ./.git/objects/7e -a -L 
-478.52 - 00028462 - CREATE - ./simpledu -l ./.git/objects/a7 -a -L 
-482.75 - 00028463 - CREATE - ./simpledu -l ./.git/objects/17 -a -L 
-486.62 - 00028464 - CREATE - ./simpledu -l ./.git/objects/ea -a -L 
-493.99 - 00028465 - CREATE - ./simpledu -l ./.git/objects/2e -a -L 
-499.01 - 00028466 - CREATE - ./simpledu -l ./.git/objects/36 -a -L 
-503.28 - 00028467 - CREATE - ./simpledu -l ./.git/objects/b6 -a -L 
-507.39 - 00028468 - CREATE - ./simpledu -l ./.git/objects/4a -a -L 
-511.33 - 00028469 - CREATE - ./simpledu -l ./.git/objects/76 -a -L 
-515.32 - 00028470 - CREATE - ./simpledu -l ./.git/objects/9f -a -L 
-519.21 - 00028471 - CREATE - ./simpledu -l ./.git/objects/f1 -a -L 
-523.04 - 00028472 - CREATE - ./simpledu -l ./.git/objects/71 -a -L 
-531.24 - 00028474 - CREATE - ./simpledu -l ./.git/objects/83 -a -L 
-535.54 - 00028475 - CREATE - ./simpledu -l ./.git/objects/79 -a -L 
-539.74 - 00028476 - CREATE - ./simpledu -l ./.git/objects/d8 -a -L 
-543.80 - 00028477 - CREATE - ./simpledu -l ./.git/objects/31 -a -L 
-551.77 - 00028478 - CREATE - ./simpledu -l ./.git/objects/c5 -a -L 
-556.21 - 00028479 - CREATE - ./simpledu -l ./.git/objects/a6 -a -L 
-564.52 - 00028480 - CREATE - ./simpledu -l ./.git/objects/67 -a -L 
-569.00 - 00028481 - CREATE - ./simpledu -l ./.git/objects/a0 -a -L 
-573.66 - 00028482 - CREATE - ./simpledu -l ./.git/objects/03 -a -L 
-578.21 - 00028483 - CREATE - ./simpledu -l ./.git/objects/a5 -a -L 
-581.91 - 00028484 - CREATE - ./simpledu -l ./.git/objects/bc -a -L 
-586.07 - 00028485 - CREATE - ./simpledu -l ./.git/objects/fd -a -L 
-590.11 - 00028486 - CREATE - ./simpledu -l ./.git/objects/09 -a -L 
-593.94 - 00028487 - CREATE - ./simpledu -l ./.git/objects/b3 -a -L 
-598.08 - 00028488 - CREATE - ./simpledu -l ./.git/objects/b9 -a -L 
-602.40 - 00028489 - CREATE - ./simpledu -l ./.git/objects/bf -a -L 
-606.63 - 00028490 - CREATE - ./simpledu -l ./.git/objects/d5 -a -L 
-610.95 - 00028491 - CREATE - ./simpledu -l ./.git/objects/ae -a -L 
-615.31 - 00028492 - CREATE - ./simpledu -l ./.git/objects/8e -a -L 
-619.66 - 00028493 - CREATE - ./simpledu -l ./.git/objects/01 -a -L 
-624.00 - 00028494 - CREATE - ./simpledu -l ./.git/objects/5f -a -L 
-627.95 - 00028495 - CREATE - ./simpledu -l ./.git/objects/6e -a -L 
-632.07 - 00028496 - CREATE - ./simpledu -l ./.git/objects/1d -a -L 
-635.97 - 00028497 - CREATE - ./simpledu -l ./.git/objects/55 -a -L 
-639.93 - 00028498 - CREATE - ./simpledu -l ./.git/objects/2f -a -L 
-644.19 - 00028499 - CREATE - ./simpledu -l ./.git/objects/61 -a -L 
-648.41 - 00028500 - CREATE - ./simpledu -l ./.git/objects/72 -a -L 
-660.78 - 00028501 - CREATE - ./simpledu -l ./.git/objects/b2 -a -L 
-665.58 - 00028502 - CREATE - ./simpledu -l ./.git/objects/22 -a -L 
-669.98 - 00028503 - CREATE - ./simpledu -l ./.git/objects/e7 -a -L 
-674.13 - 00028504 - CREATE - ./simpledu -l ./.git/objects/ef -a -L 
-678.47 - 00028505 - CREATE - ./simpledu -l ./.git/objects/57 -a -L 
-686.88 - 00028506 - CREATE - ./simpledu -l ./.git/refs -a -L 
-691.07 - 00028507 - CREATE - ./simpledu -l ./.git/refs/remotes -a -L 
-694.97 - 00028508 - CREATE - ./simpledu -l ./.git/refs/remotes/origin -a -L 
-699.10 - 00028509 - CREATE - ./simpledu -l ./.git/refs/tags -a -L 
-703.03 - 00028510 - CREATE - ./simpledu -l ./.git/refs/heads -a -L 
-707.20 - 00028511 - CREATE - ./simpledu -l ./Testar -a -L 
-711.13 - 00028512 - CREATE - ./simpledu -l ./Testar/D1 -a -L 
-714.84 - 00028513 - CREATE - ./simpledu -l ./Testar/D1/Db -a -L 
-718.62 - 00028514 - CREATE - ./simpledu -l ./Testar/D1/Db/Dx -a -L 
-722.41 - 00028515 - CREATE - ./simpledu -l  -a -L 
-726.45 - 00028516 - CREATE - ./simpledu -l ./Testar/D1/Da -a -L 
-731.09 - 00028517 - CREATE - ./simpledu -l ./Testar/D2 -a -L 
+0.01 - 00023584 - CREATE - ./simpledu -l ./Testar -a -L 
+4.31 - 00023585 - CREATE - ./simpledu -l ./Testar/D1 -a -L 
+11.79 - 00023586 - CREATE - ./simpledu -l ./Testar/D1/Db -a -L 
+19.18 - 00023587 - CREATE - ./simpledu -l ./Testar/D1/Db/Dx -a -L 
+23.16 - 00023588 - CREATE - ./simpledu -l ./Testar/D1/Db/Dx/smblnk -a -L 
+26.65 - 00023588 - RECV_PIPE - 12	./Testar/D1/Db/Dx/smblnk\n 
+26.67 - 00023587 - ENTRY - 12	./Testar/D1/Db/Dx/smblnk\n 
+29.87 - 00023587 - SEND_PIPE - 12	./Testar/D1/Db/Dx/smblnk\n 
+33.01 - 00023588 - EXIT - 0 
+36.07 - 00023587 - RECV_PIPE - 252	./Testar/D1/Db/Dx\n 
+36.09 - 00023586 - ENTRY - 252	./Testar/D1/Db/Dx\n 
+39.10 - 00023586 - SEND_PIPE - 252	./Testar/D1/Db/Dx\n 
+42.03 - 00023587 - EXIT - 0 
+45.16 - 00023586 - RECV_PIPE - 264	./Testar/D1/Db\n 
+45.18 - 00023585 - ENTRY - 264	./Testar/D1/Db\n 
+48.48 - 00023585 - SEND_PIPE - 264	./Testar/D1/Db\n 
+51.52 - 00023586 - EXIT - 0 
+55.60 - 00023589 - CREATE - ./simpledu -l ./Testar/D1/Da -a -L 
+58.92 - 00023589 - RECV_PIPE - 8	./Testar/D1/Da\n 
+58.94 - 00023585 - ENTRY - 8	./Testar/D1/Da\n 
+61.91 - 00023585 - SEND_PIPE - 8	./Testar/D1/Da\n 
+64.89 - 00023589 - EXIT - 0 
+67.90 - 00023585 - RECV_PIPE - 280	./Testar/D1\n 
+67.92 - 00023584 - ENTRY - 280	./Testar/D1\n 
+75.24 - 00023584 - SEND_PIPE - 280	./Testar/D1\n 
+78.55 - 00023585 - EXIT - 0 
+82.31 - 00023590 - CREATE - ./simpledu -l ./Testar/D2 -a -L 
+85.50 - 00023590 - RECV_PIPE - 12	./Testar/D2\n 
+85.52 - 00023584 - ENTRY - 12	./Testar/D2\n 
+88.83 - 00023584 - SEND_PIPE - 12	./Testar/D2\n 
+91.87 - 00023590 - EXIT - 0 
+95.03 - 00023584 - EXIT - 0 

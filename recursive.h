@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "utils.h"
+#include "log.h"
 
 #define READ 0
 #define WRITE 1

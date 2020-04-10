@@ -108,8 +108,11 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
           char buffer[1024];
 
           while ((ret = read(my_pipe[READ], buffer, 1024)) > 0) {
-            if (!max_depth || (max_depth && depth > 0))
+            if (!max_depth || (max_depth && depth > 0)) {
               printf("%s", buffer);
+              writeLog("ENTRY", buffer, getpid());
+            }
+            writeLog("SEND_PIPE", buffer, getpid());
             token = strtok(buffer, "\t");
             if(!separate_dirs)
               total_size += atol(token);
@@ -117,6 +120,9 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
 
           close(my_pipe[READ]);
           waitpid(-1,&status,0);
+          char* exit_status = (char*)malloc(sizeof(int));
+          sprintf(exit_status, "%d", WEXITSTATUS(status));
+          writeLog("EXIT", exit_status, new_pid);
         }
         else {
           perror("fork ERROR");
@@ -146,9 +152,6 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
     total_size += stat_buf.st_blocks/2;
   }
 
-  // aqui tinha um if para ver se nao era hidden directory, temos de ver como funciona
-  // para estes, pq o du mostra... (experimentem com ".")
-
   char total[256];
   char* dados_diretorio = (char*)malloc(strlen(total) + 1 + strlen(dirpath) + 2);
   sprintf(total, "%ld", total_size);
@@ -159,6 +162,7 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
   fstat(STDIN_FILENO,&buf);
   if(S_ISFIFO(buf.st_mode)){
     write(STDIN_FILENO, dados_diretorio, strlen(dados_diretorio) + 1);
+    writeLog("RECV_PIPE", dados_diretorio, getpid());
     fflush(stdin);
   }
   else{
@@ -169,5 +173,10 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
   free(dados_diretorio);
 
   closedir(dirp);
+
+  if (atoi(getenv("FATHER_PID")) == getpid()) {
+    writeLog("EXIT", "0", getpid());
+  }
+
   exit(0);
 }

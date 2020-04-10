@@ -20,7 +20,7 @@ float currentTime();
 
 int initLog();
 
-int writeLog(char * action, char* info);
+int writeLog(char * action, char* info, pid_t pid);
 
 int closeLog();
 

@@ -27,7 +27,7 @@ int main(int argc, char* argv[], char* envp[]) {
     exit(1);
   }
 
-  /*if (getenv("FATHER_PID") == NULL)
+  if (getenv("FATHER_PID") == NULL)
   {
     if(putenv("FATHER_PID")<0) {
       fprintf(stderr, "Unable to create environment variable\n");
@@ -42,11 +42,11 @@ int main(int argc, char* argv[], char* envp[]) {
       fprintf(stderr, "unable to set father PID\n");
       exit(1);
     }
-  }*/
+  }
 
   setenv("LOG_FILENAME","log.txt",1);
 
-  //initLog(argc, argv);
+  initLog(argc, argv);
 
   const char *opts[]={"-a","-b","-B","-l","-L","-S","--all","--bytes","--block-size=","--count-links","--dereference","--separate-dirs","--max-depth="};
   int opts_size = sizeof(opts)/sizeof(opts[0]);
@@ -103,6 +103,8 @@ int main(int argc, char* argv[], char* envp[]) {
   int result = recursive_tree(dirpath, dir_index, depth_index, argv);
 
   free(dirpath);
+
+  closeLog();
 
   return 0;
 }

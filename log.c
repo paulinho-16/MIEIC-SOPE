@@ -1,26 +1,17 @@
 #include "log.h"
 
 static struct timespec beginTime;
-clock_t begin_time;
 bool existsLog = true;
 int myLog;
 
 double begin;
-//clock_t begin;
 
 float currentTime()
 {
     struct timespec thisTime;
     clock_gettime(CLOCK_MONOTONIC, &thisTime);
-    /*gettimeofday(&thisTime, NULL);
-    float end = thisTime.tv_usec/1000.0 + thisTime.tv_sec*1000;*/
-    //clock_t end = clock();
     double end = (thisTime.tv_nsec/1000000000.0 + thisTime.tv_sec)*1000.0;
-    //printf("BEGIN: %f\n", begin);
-    //printf("ATUAL: %f\n", end);
     return (double) end-begin;
-    //long seconds = thisTime.tv_sec - beginTime.tv_sec;
-    //long micros = ((seconds*1000000) + thisTime.tv_usec) - beginTime.tv_usec;
 }
 
 
@@ -31,8 +22,6 @@ int initLog(int argc, char* argv[]) {
         char *logFileName = (char*)malloc(strlen(getenv("LOG_FILENAME"))+ 1); 
         
         logFileName = getenv("LOG_FILENAME");
-
-        //printf("LOG_FILENAME: %s\n", logFileName);
 
         char *infoParameter = (char*)malloc(300);
 
@@ -51,12 +40,9 @@ int initLog(int argc, char* argv[]) {
             return -1;
         }
 
-        //gettimeofday(&beginTime, NULL);
         clock_gettime(CLOCK_MONOTONIC, &beginTime);
-        //begin = clock();
 
         begin = (beginTime.tv_nsec/1000000000.0 + beginTime.tv_sec)*1000.0;
-        //begin = beginTime.tv_usec/1000.0 + beginTime.tv_sec*1000;
 
         if (getenv("BEGIN_TIME") == NULL) {
             if(putenv("BEGIN_TIME")<0)
@@ -67,8 +53,6 @@ int initLog(int argc, char* argv[]) {
         }
 
         sprintf(beginString,"%f",begin);
-
-        //printf("beginSTRING: %s\n", beginString);
 
         if(setenv("BEGIN_TIME",beginString,1)<0)
         {
@@ -83,9 +67,7 @@ int initLog(int argc, char* argv[]) {
         }
         strcat(infoParameter,argv[argc-1]);
 
-        //printf("infoParameter: %s\n", infoParameter);
-
-        writeLog("CREATE", infoParameter);
+        writeLog("CREATE", infoParameter, getpid());
     }
 
     else 
@@ -110,7 +92,6 @@ int initLog(int argc, char* argv[]) {
 
 
         begin = atof(getenv("BEGIN_TIME"));
-        //begin = clock();
   
         for(int i=0;i<argc-1;i++)
         {
@@ -119,24 +100,23 @@ int initLog(int argc, char* argv[]) {
         }
         strcat(infoParameter,argv[argc-1]);
 
-        writeLog("CREATE", infoParameter);
+        writeLog("CREATE", infoParameter, getpid());
 
     }
 }
 
 
 
-int writeLog(char * action,char* info)
+int writeLog(char * action,char* info, pid_t pid)
 {
     if(existsLog)
     {
-        //char* logLine = (char *)malloc(sizeof(float) + 3 + sizeof(int) + 3 + strlen(action) + 3 + strlen(info) + 3);
+        if (!strcmp(action, "ENTRY") || !strcmp(action, "RECV_PIPE")) {
+            strtok(info, "\n");
+            strcat(info, "\\n");
+        }
         char logLine[256];
-        int size = sprintf(logLine, "%.2f - %.8d - %s - %s \n", currentTime(), getpid(), action, info);
-        /*printf("Action: %s\n", action);
-        printf("INFO: %s\n", info);
-
-        printf("SIZE: %s\n", logLine);*/
+        int size = sprintf(logLine, "%.2f - %.8d - %s - %s \n", currentTime(), pid, action, info);
 
         if (write(myLog, logLine, strlen(logLine))<0)
         {
