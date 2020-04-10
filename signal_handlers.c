@@ -34,11 +34,12 @@ void initSignals(){
 }
 
 void sigint_handler(int signo){
-    printf("Terminate program ?(y/n):");
+    printf("\nTerminate program ?(y/n):");
+
     kill(-atoi(getenv("GROUP_ID")),SIGSTOP);
-    int st;
-    
-    int c = getchar();
+    int st,c;
+
+    c= getchar();
 
     if(c=='y'){
         kill(-atoi(getenv("GROUP_ID")),SIGTERM);
@@ -48,13 +49,17 @@ void sigint_handler(int signo){
     else if(c=='n'){
         kill(-atoi(getenv("GROUP_ID")),SIGCONT);
     }
+    else exit(3);
 }
 
 void sigcont_handler(int signo){
-    kill(0,SIGCONT);
+    kill(-atoi(getenv("GROUP_ID")),SIGCONT);
 }
 
 void sigterm_handler(int signo){
-    kill(0,SIGTERM);
-    exit(3);
+    int status;
+    kill(-atoi(getenv("GROUP_ID")),SIGTERM);
+    waitpid(-1,&status,0);
+    printf("Program terminated");
+    exit(0);
 }

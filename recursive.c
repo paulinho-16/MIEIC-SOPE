@@ -82,15 +82,9 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
 
         new_pid = fork();
         if (new_pid == 0) {
-          if(getppid()==atoi(getenv("FATHER_PID"))){
-            char* pid = (char *)malloc(sizeof(int));
-            sprintf(pid,"%d", getpid());
+          gid_t gid=atoi(getenv("GROUP_ID"));
 
-            setenv("GROUP_ID",pid,1);
-            free(pid);
-          }
-          else
-            setgid(atoi(getenv("GROUP_ID")));
+          setgid(gid); //this needs sudo permissions
           
           close(my_pipe[READ]);
           if (dup2(my_pipe[WRITE], STDIN_FILENO) == -1) {
