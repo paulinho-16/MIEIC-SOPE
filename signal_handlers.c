@@ -1,7 +1,7 @@
 #include "signal_handlers.h"
 
 
-void initSignals(){
+void initSignals() {
 
     struct sigaction actionInt,actionTerm,actionCont;
     actionInt.sa_handler = sigint_handler;
@@ -30,7 +30,29 @@ void initSignals(){
         fprintf(stderr,"Unable to install SIGCONT handler\n");
         exit(4);
     }
+}
 
+void initSignalsChildren() {
+
+    struct sigaction actionTerm,actionCont;
+    actionTerm.sa_handler = sigterm_handler_children;
+    actionCont.sa_handler = sigcont_handler_children;
+
+    sigemptyset(&actionTerm.sa_mask);
+    sigemptyset(&actionCont.sa_mask);
+
+    actionTerm.sa_flags = 0;
+    actionCont.sa_flags = 0;
+
+    if (sigaction(SIGTERM,&actionTerm,NULL) < 0)  {
+        fprintf(stderr,"Unable to install SIGTERM handler\n");
+        exit(2);
+    }
+
+    if (sigaction(SIGCONT,&actionCont,NULL) < 0)  {
+        fprintf(stderr,"Unable to install SIGCONT handler\n");
+        exit(4);
+    }
 }
 
 void sigint_handler(int signo){
@@ -42,24 +64,33 @@ void sigint_handler(int signo){
     c= getchar();
 
     if(c=='y'){
-        kill(-atoi(getenv("GROUP_ID")),SIGTERM);
-        waitpid(-1,&st,0);
+        kill(getpid(),SIGTERM);
         exit(0);
     }
     else if(c=='n'){
-        kill(-atoi(getenv("GROUP_ID")),SIGCONT);
+        kill(getpid(),SIGCONT);
     }
     else exit(3);
 }
 
-void sigcont_handler(int signo){
+void sigcont_handler(int signo) {
+    printf("Continuing Processes...\n");
     kill(-atoi(getenv("GROUP_ID")),SIGCONT);
+}
+
+void sigcont_handler_children(int signo) {
+    writeLog("RECV_SIGNAL", " --> SIGCONT", getpid());
 }
 
 void sigterm_handler(int signo){
     int status;
     kill(-atoi(getenv("GROUP_ID")),SIGTERM);
     waitpid(-1,&status,0);
-    printf("Program terminated");
+    printf("Program terminated\n");
+    exit(0);
+}
+
+void sigterm_handler_children(int signo){
+    writeLog("RECV_SIGNAL", " --> SIGTERM", getpid());
     exit(0);
 }

@@ -28,18 +28,10 @@ int main(int argc, char* argv[], char* envp[]) {
   }
 
   if (getenv("FATHER_PID") == NULL)
-  {/*
-    if(putenv("FATHER_PID")<0) {
-      fprintf(stderr, "Unable to create environment variable\n");
-      exit(1);
-     }*/
-
-
+  {
     char* pid = (char *)malloc(sizeof(int));
     sprintf(pid,"%d", getpgrp()+1);
     setenv("GROUP_ID",pid,1);
-
-          
 
     char* fatherPid = (char *)malloc(sizeof(int));
     sprintf(fatherPid,"%d", getpid());
@@ -49,7 +41,6 @@ int main(int argc, char* argv[], char* envp[]) {
       fprintf(stderr, "unable to set father PID\n");
       exit(1);
     }
-
 
     initSignals();
   }

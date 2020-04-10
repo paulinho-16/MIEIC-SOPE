@@ -1,32 +1,155 @@
-0.02 - 00031683 - CREATE - ./simpledu -l ./Testar -a -L 
-81.33 - 00031684 - CREATE - ./simpledu -l ./Testar/D1 -a -L 
-114.68 - 00031685 - CREATE - ./simpledu -l ./Testar/D1/Da -a -L 
-147.30 - 00031685 - RECV_PIPE - 8	./Testar/D1/Da\n 
-147.37 - 00031684 - ENTRY - 8	./Testar/D1/Da\n 
-180.60 - 00031684 - SEND_PIPE - 8	./Testar/D1/Da\n 
-214.17 - 00031685 - EXIT - 0 
-248.97 - 00031686 - CREATE - ./simpledu -l ./Testar/D1/Db -a -L 
-281.91 - 00031687 - CREATE - ./simpledu -l ./Testar/D1/Db/Dx -a -L 
-315.74 - 00031688 - CREATE - ./simpledu -l ./Testar/D1/Db/Dx/smblnk -a -L 
-348.27 - 00031688 - RECV_PIPE - 12	./Testar/D1/Db/Dx/smblnk\n 
-348.35 - 00031687 - ENTRY - 12	./Testar/D1/Db/Dx/smblnk\n 
-381.50 - 00031687 - SEND_PIPE - 12	./Testar/D1/Db/Dx/smblnk\n 
-414.97 - 00031688 - EXIT - 0 
-448.59 - 00031687 - RECV_PIPE - 252	./Testar/D1/Db/Dx\n 
-448.66 - 00031686 - ENTRY - 252	./Testar/D1/Db/Dx\n 
-481.92 - 00031686 - SEND_PIPE - 252	./Testar/D1/Db/Dx\n 
-515.51 - 00031687 - EXIT - 0 
-548.94 - 00031686 - RECV_PIPE - 264	./Testar/D1/Db\n 
-549.00 - 00031684 - ENTRY - 264	./Testar/D1/Db\n 
-582.32 - 00031684 - SEND_PIPE - 264	./Testar/D1/Db\n 
-615.90 - 00031686 - EXIT - 0 
-649.39 - 00031684 - RECV_PIPE - 280	./Testar/D1\n 
-649.48 - 00031683 - ENTRY - 280	./Testar/D1\n 
-682.85 - 00031683 - SEND_PIPE - 280	./Testar/D1\n 
-716.29 - 00031684 - EXIT - 0 
-750.83 - 00031689 - CREATE - ./simpledu -l ./Testar/D2 -a -L 
-783.50 - 00031689 - RECV_PIPE - 12	./Testar/D2\n 
-783.58 - 00031683 - ENTRY - 12	./Testar/D2\n 
-816.74 - 00031683 - SEND_PIPE - 12	./Testar/D2\n 
-850.20 - 00031689 - EXIT - 0 
-883.75 - 00031683 - EXIT - 0 
+0.05 - 00017574 - CREATE - ./simpledu -l . 
+9.60 - 00017575 - CREATE - ./simpledu -l ./.git 
+13.38 - 00017576 - CREATE - ./simpledu -l ./.git/info 
+16.49 - 00017576 - RECV_PIPE - 8	./.git/info\n 
+16.53 - 00017575 - ENTRY - 8	./.git/info\n 
+19.42 - 00017575 - SEND_PIPE - 8	./.git/info\n 
+22.43 - 00017576 - EXIT - 0 
+26.32 - 00017577 - CREATE - ./simpledu -l ./.git/logs 
+30.60 - 00017578 - CREATE - ./simpledu -l ./.git/logs/refs 
+34.22 - 00017579 - CREATE - ./simpledu -l ./.git/logs/refs/remotes 
+42.04 - 00017580 - CREATE - ./simpledu -l ./.git/logs/refs/remotes/origin 
+49.25 - 00017580 - RECV_PIPE - 12	./.git/logs/refs/remotes/origin\n 
+49.30 - 00017579 - ENTRY - 12	./.git/logs/refs/remotes/origin\n 
+52.25 - 00017579 - SEND_PIPE - 12	./.git/logs/refs/remotes/origin\n 
+55.36 - 00017580 - EXIT - 0 
+58.71 - 00017579 - RECV_PIPE - 16	./.git/logs/refs/remotes\n 
+58.76 - 00017578 - ENTRY - 16	./.git/logs/refs/remotes\n 
+61.90 - 00017578 - SEND_PIPE - 16	./.git/logs/refs/remotes\n 
+65.15 - 00017579 - EXIT - 0 
+68.86 - 00017582 - CREATE - ./simpledu -l ./.git/logs/refs/heads 
+71.98 - 00017582 - RECV_PIPE - 12	./.git/logs/refs/heads\n 
+72.02 - 00017578 - ENTRY - 12	./.git/logs/refs/heads\n 
+75.00 - 00017578 - SEND_PIPE - 12	./.git/logs/refs/heads\n 
+77.99 - 00017582 - EXIT - 0 
+80.94 - 00017578 - RECV_PIPE - 32	./.git/logs/refs\n 
+80.97 - 00017577 - ENTRY - 32	./.git/logs/refs\n 
+83.90 - 00017577 - SEND_PIPE - 32	./.git/logs/refs\n 
+86.91 - 00017578 - EXIT - 0 
+90.23 - 00017577 - RECV_PIPE - 44	./.git/logs\n 
+90.26 - 00017575 - ENTRY - 44	./.git/logs\n 
+93.15 - 00017575 - SEND_PIPE - 44	./.git/logs\n 
+96.12 - 00017577 - EXIT - 0 
+99.74 - 00017583 - CREATE - ./simpledu -l ./.git/branches 
+102.82 - 00017583 - RECV_PIPE - 4	./.git/branches\n 
+102.85 - 00017575 - ENTRY - 4	./.git/branches\n 
+105.88 - 00017575 - SEND_PIPE - 4	./.git/branches\n 
+113.01 - 00017583 - EXIT - 0 
+118.49 - 00017585 - CREATE - ./simpledu -l ./.git/hooks 
+121.77 - 00017585 - RECV_PIPE - 52	./.git/hooks\n 
+121.81 - 00017575 - ENTRY - 52	./.git/hooks\n 
+124.71 - 00017575 - SEND_PIPE - 52	./.git/hooks\n 
+127.67 - 00017585 - EXIT - 0 
+131.26 - 00017586 - CREATE - ./simpledu -l ./.git/objects 
+134.94 - 00017587 - CREATE - ./simpledu -l ./.git/objects/f4 
+137.95 - 00017587 - RECV_PIPE - 12	./.git/objects/f4\n 
+137.99 - 00017586 - ENTRY - 12	./.git/objects/f4\n 
+140.93 - 00017586 - SEND_PIPE - 12	./.git/objects/f4\n 
+147.90 - 00017587 - EXIT - 0 
+151.81 - 00017588 - CREATE - ./simpledu -l ./.git/objects/info 
+154.95 - 00017588 - RECV_PIPE - 4	./.git/objects/info\n 
+155.09 - 00017586 - ENTRY - 4	./.git/objects/info\n 
+161.04 - 00017586 - SEND_PIPE - 4	./.git/objects/info\n 
+164.02 - 00017588 - EXIT - 0 
+167.82 - 00017589 - CREATE - ./simpledu -l ./.git/objects/b5 
+170.95 - 00017589 - RECV_PIPE - 12	./.git/objects/b5\n 
+170.99 - 00017586 - ENTRY - 12	./.git/objects/b5\n 
+174.09 - 00017586 - SEND_PIPE - 12	./.git/objects/b5\n 
+177.09 - 00017589 - EXIT - 0 
+180.61 - 00017590 - CREATE - ./simpledu -l ./.git/objects/29 
+187.85 - 00017590 - RECV_PIPE - 8	./.git/objects/29\n 
+187.89 - 00017586 - ENTRY - 8	./.git/objects/29\n 
+190.91 - 00017586 - SEND_PIPE - 8	./.git/objects/29\n 
+193.92 - 00017590 - EXIT - 0 
+197.58 - 00017591 - CREATE - ./simpledu -l ./.git/objects/78 
+204.31 - 00017591 - RECV_PIPE - 12	./.git/objects/78\n 
+204.34 - 00017586 - ENTRY - 12	./.git/objects/78\n 
+210.88 - 00017586 - SEND_PIPE - 12	./.git/objects/78\n 
+213.96 - 00017591 - EXIT - 0 
+218.03 - 00017592 - CREATE - ./simpledu -l ./.git/objects/2d 
+221.44 - 00017592 - RECV_PIPE - 12	./.git/objects/2d\n 
+221.48 - 00017586 - ENTRY - 12	./.git/objects/2d\n 
+228.70 - 00017586 - SEND_PIPE - 12	./.git/objects/2d\n 
+231.85 - 00017592 - EXIT - 0 
+235.49 - 00017593 - CREATE - ./simpledu -l ./.git/objects/b1 
+238.56 - 00017593 - RECV_PIPE - 8	./.git/objects/b1\n 
+238.59 - 00017586 - ENTRY - 8	./.git/objects/b1\n 
+241.65 - 00017586 - SEND_PIPE - 8	./.git/objects/b1\n 
+244.69 - 00017593 - EXIT - 0 
+251.93 - 00017594 - CREATE - ./simpledu -l ./.git/objects/ed 
+255.11 - 00017594 - RECV_PIPE - 8	./.git/objects/ed\n 
+255.16 - 00017586 - ENTRY - 8	./.git/objects/ed\n 
+265.48 - 00017586 - SEND_PIPE - 8	./.git/objects/ed\n 
+268.63 - 00017594 - EXIT - 0 
+272.55 - 00017595 - CREATE - ./simpledu -l ./.git/objects/c0 
+279.17 - 00017595 - RECV_PIPE - 8	./.git/objects/c0\n 
+279.28 - 00017586 - ENTRY - 8	./.git/objects/c0\n 
+282.26 - 00017586 - SEND_PIPE - 8	./.git/objects/c0\n 
+286.08 - 00017595 - EXIT - 0 
+290.23 - 00017596 - CREATE - ./simpledu -l ./.git/objects/4d 
+293.29 - 00017596 - RECV_PIPE - 16	./.git/objects/4d\n 
+293.32 - 00017586 - ENTRY - 16	./.git/objects/4d\n 
+296.41 - 00017586 - SEND_PIPE - 16	./.git/objects/4d\n 
+299.42 - 00017596 - EXIT - 0 
+303.36 - 00017597 - CREATE - ./simpledu -l ./.git/objects/a8 
+306.41 - 00017597 - RECV_PIPE - 8	./.git/objects/a8\n 
+306.43 - 00017586 - ENTRY - 8	./.git/objects/a8\n 
+309.36 - 00017586 - SEND_PIPE - 8	./.git/objects/a8\n 
+312.47 - 00017597 - EXIT - 0 
+316.34 - 00017598 - CREATE - ./simpledu -l ./.git/objects/45 
+319.35 - 00017598 - RECV_PIPE - 12	./.git/objects/45\n 
+319.38 - 00017586 - ENTRY - 12	./.git/objects/45\n 
+322.58 - 00017586 - SEND_PIPE - 12	./.git/objects/45\n 
+325.67 - 00017598 - EXIT - 0 
+329.26 - 00017599 - CREATE - ./simpledu -l ./.git/objects/aa 
+332.38 - 00017599 - RECV_PIPE - 12	./.git/objects/aa\n 
+332.48 - 00017586 - ENTRY - 12	./.git/objects/aa\n 
+339.70 - 00017586 - SEND_PIPE - 12	./.git/objects/aa\n 
+342.80 - 00017599 - EXIT - 0 
+346.76 - 00017600 - CREATE - ./simpledu -l ./.git/objects/06 
+349.84 - 00017600 - RECV_PIPE - 12	./.git/objects/06\n 
+349.87 - 00017586 - ENTRY - 12	./.git/objects/06\n 
+352.89 - 00017586 - SEND_PIPE - 12	./.git/objects/06\n 
+355.99 - 00017600 - EXIT - 0 
+359.68 - 00017601 - CREATE - ./simpledu -l ./.git/objects/89 
+362.80 - 00017601 - RECV_PIPE - 8	./.git/objects/89\n 
+362.83 - 00017586 - ENTRY - 8	./.git/objects/89\n 
+365.86 - 00017586 - SEND_PIPE - 8	./.git/objects/89\n 
+369.12 - 00017601 - EXIT - 0 
+373.03 - 00017602 - CREATE - ./simpledu -l ./.git/objects/8a 
+376.14 - 00017602 - RECV_PIPE - 8	./.git/objects/8a\n 
+376.17 - 00017586 - ENTRY - 8	./.git/objects/8a\n 
+379.30 - 00017586 - SEND_PIPE - 8	./.git/objects/8a\n 
+382.35 - 00017602 - EXIT - 0 
+1968.21 - 00017575 - EXIT - 0 
+1974.93 - 00017605 - CREATE - ./simpledu -l ./Testar 
+1979.11 - 00017606 - CREATE - ./simpledu -l ./Testar/D1 
+1983.54 - 00017607 - CREATE - ./simpledu -l ./Testar/D1/Db 
+1987.33 - 00017608 - CREATE - ./simpledu -l ./Testar/D1/Db/Dx 
+1990.48 - 00017608 - RECV_PIPE - 240	./Testar/D1/Db/Dx\n 
+1990.52 - 00017607 - ENTRY - 240	./Testar/D1/Db/Dx\n 
+1993.68 - 00017607 - SEND_PIPE - 240	./Testar/D1/Db/Dx\n 
+1996.96 - 00017608 - EXIT - 0 
+2000.11 - 00017607 - RECV_PIPE - 252	./Testar/D1/Db\n 
+2000.16 - 00017606 - ENTRY - 252	./Testar/D1/Db\n 
+2003.19 - 00017606 - SEND_PIPE - 252	./Testar/D1/Db\n 
+2006.44 - 00017607 - EXIT - 0 
+2010.25 - 00017609 - CREATE - ./simpledu -l ./Testar/D1/Da 
+2013.33 - 00017609 - RECV_PIPE - 8	./Testar/D1/Da\n 
+2013.35 - 00017606 - ENTRY - 8	./Testar/D1/Da\n 
+2016.29 - 00017606 - SEND_PIPE - 8	./Testar/D1/Da\n 
+2019.34 - 00017609 - EXIT - 0 
+2022.29 - 00017606 - RECV_PIPE - 268	./Testar/D1\n 
+2022.33 - 00017605 - ENTRY - 268	./Testar/D1\n 
+2025.36 - 00017605 - SEND_PIPE - 268	./Testar/D1\n 
+2028.51 - 00017606 - EXIT - 0 
+2032.29 - 00017610 - CREATE - ./simpledu -l ./Testar/D2 
+2035.31 - 00017610 - RECV_PIPE - 12	./Testar/D2\n 
+2035.34 - 00017605 - ENTRY - 12	./Testar/D2\n 
+2038.52 - 00017605 - SEND_PIPE - 12	./Testar/D2\n 
+2041.50 - 00017610 - EXIT - 0 
+2044.48 - 00017605 - RECV_PIPE - 288	./Testar\n 
+2044.51 - 00017574 - ENTRY - 288	./Testar\n 
+2047.46 - 00017574 - SEND_PIPE - 288	./Testar\n 
+2050.46 - 00017605 - EXIT - 0 
+2053.56 - 00017574 - EXIT - 0 

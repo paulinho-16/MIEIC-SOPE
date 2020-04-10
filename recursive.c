@@ -85,7 +85,9 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
           gid_t gid=atoi(getenv("GROUP_ID"));
 
           setgid(gid); //this needs sudo permissions
-          
+
+          initSignalsChildren();
+
           close(my_pipe[READ]);
           if (dup2(my_pipe[WRITE], STDIN_FILENO) == -1) {
             perror("dup2");

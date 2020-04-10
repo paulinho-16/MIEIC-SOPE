@@ -44,14 +44,6 @@ int initLog(int argc, char* argv[]) {
 
         begin = (beginTime.tv_nsec/1000000000.0 + beginTime.tv_sec)*1000.0;
 
-        if (getenv("BEGIN_TIME") == NULL) {
-            if(putenv("BEGIN_TIME")<0)
-            {
-                fprintf(stderr, "unable to create env variable\n");
-                return -1;
-            }
-        }
-
         sprintf(beginString,"%f",begin);
 
         if(setenv("BEGIN_TIME",beginString,1)<0)
