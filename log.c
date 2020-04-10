@@ -5,7 +5,7 @@ clock_t begin_time;
 bool existsLog = true;
 int myLog;
 
-float begin;
+double begin;
 //clock_t begin;
 
 float currentTime()
@@ -15,10 +15,10 @@ float currentTime()
     /*gettimeofday(&thisTime, NULL);
     float end = thisTime.tv_usec/1000.0 + thisTime.tv_sec*1000;*/
     //clock_t end = clock();
-    float end = (thisTime.tv_nsec/1000000000.0 + thisTime.tv_sec)*1000.0;
+    double end = (thisTime.tv_nsec/1000000000.0 + thisTime.tv_sec)*1000.0;
     //printf("BEGIN: %f\n", begin);
     //printf("ATUAL: %f\n", end);
-    return (float) end-begin;
+    return (double) end-begin;
     //long seconds = thisTime.tv_sec - beginTime.tv_sec;
     //long micros = ((seconds*1000000) + thisTime.tv_usec) - beginTime.tv_usec;
 }
@@ -66,6 +66,8 @@ int initLog(int argc, char* argv[]) {
             }
         }
         
+        printf("BEGIN: %f\n", begin);
+
         sprintf(beginString,"%f",begin);
 
         //printf("beginSTRING: %s\n", beginString);
