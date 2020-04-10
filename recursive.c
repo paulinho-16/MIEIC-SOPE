@@ -82,6 +82,7 @@ int recursive_tree(char* dirpath, int dir_index, int depth_index, char** argv) {
 
         new_pid = fork();
         if (new_pid == 0) {
+          setgid(getppid()); 
           close(my_pipe[READ]);
           if (dup2(my_pipe[WRITE], STDIN_FILENO) == -1) {
             perror("dup2");
