@@ -18,23 +18,22 @@ struct msg
 
 void *serverThread(void *arg)
 {
-    struct msg *rec =(struct msg*)malloc(sizeof(struct msg));
-    *rec = *(struct msg *)arg;
+    struct msg rec = *(struct msg *)arg;
     int fd;
 
-    if ((fd = open(rec->fifo_client, 666)) < 0)
+    if ((fd = open(rec.fifo_client, 0666)) < 0)
         printf("Couldn't open fifo on thread\n");
     else
         printf("Processing request\n");
 
-    sleep(rec->dur); //using bathroom
+    sleep(rec.dur); //using bathroom
+    
 
-    rec->pid=getpid();
-    rec->tid=pthread_self();
+    rec.pid=getpid();
+    rec.tid=pthread_self();
 
-    write(fd, &rec, sizeof(rec));
+    write(fd, &rec, sizeof(struct msg));
     free((struct msg *)arg);
-    free(rec);
     pthread_exit(0);
 }
 
@@ -65,7 +64,6 @@ int main()
     while (1)
     {
         struct msg *request = malloc(sizeof(struct msg));
-        numPlace++;
 
         if (read(fd, request, sizeof(struct msg)) > 0)
         {
@@ -80,6 +78,7 @@ int main()
 
             pthread_t thread;
             pthread_create(&thread, NULL, serverThread, request);
+            numPlace++;
         }
     }
 }

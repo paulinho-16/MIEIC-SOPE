@@ -67,7 +67,7 @@ void *userThread(void *arg)
     else
         printf("%s opened in RDWR mode\n", req.fifo_client);
 
-    if (read(fd, rec, sizeof(rec)) < 0)
+    if (read(fd, rec, sizeof(struct msg)) < 0)
         printf("Failed to read response from server\n");
     else{
         printf("Request -- i:%d pid:%d pl:%d dur:%f tid:%lu client:%s\n",req.i,req.pid,req.pl,req.dur,req.tid,req.fifo_client);
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     //make 10 requests to server instead of using time
     for (int i = 0; i < 10; i++)
     {
-        struct msg *request = malloc(sizeof(struct msg));
+        struct msg *request = (struct msg *)malloc(sizeof(struct msg));
 
         numRequest++;
         request->i=numRequest;
