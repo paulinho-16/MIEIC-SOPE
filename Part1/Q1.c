@@ -16,27 +16,35 @@ int nsecs, nplaces, nthreads;
 
 struct msg
 {
-    int i, pid, pl;
+    int i, pl;
     double dur;
+    pid_t pid;
     pthread_t tid;
-    char fifo_client[100];
+    char client_fifo[256];
 };
 
 void *serverThread(void *arg)
 {
+    printf("ENTROU NA THREAD DE Q1\n");
+
     struct msg rec = *(struct msg *)arg;
     int fd;
 
-    if ((fd = open(rec.fifo_client, 0666)) < 0)
+    printf("DEPOIS DOS DADOS DE Q1\n");
+
+    if ((fd = open(rec.client_fifo, O_WRONLY)) < 0)
         printf("Couldn't open fifo on thread\n");
     else
         printf("Processing request\n");
 
+    printf("ANTES DO SLEEP, dur = %f\n", rec.dur);
     sleep(rec.dur); //using bathroom
-    
+    printf("DEPOIS DO SLEEP, dur = %f\n", rec.dur);
 
-    rec.pid=getpid();
-    rec.tid=pthread_self();
+    rec.pid = getpid();
+    rec.tid = pthread_self();
+
+    printf("EM Q1 - FIFO_RECEBIDO: %s, PID: %d, DURACAO: %f\n", rec.client_fifo, rec.pid, rec.dur);
 
     write(fd, &rec, sizeof(struct msg));
     free((struct msg *)arg);
@@ -66,10 +74,10 @@ int main(int argc, char *argv[])
     else
         printf("%s created successfully\n", server_fifo);
 
-    if ((fd = open(server_fifo, O_RDWR)) < 0)
+    if ((fd = open(server_fifo, O_RDONLY)) < 0)
         printf("Couldn't open %s\n", server_fifo);
     else
-        printf("%s opened in RDWR mode\n", server_fifo);
+        printf("%s opened in RDONLY mode\n", server_fifo);
 
     while (1)
     {
@@ -78,6 +86,8 @@ int main(int argc, char *argv[])
         if (read(fd, request, sizeof(struct msg)) > 0)
         {
             request->pl=numPlace;
+
+            printf("RECEBIDO FIFO: %s\n", request->client_fifo);
 
             if (request->dur == 0)
             {
@@ -91,4 +101,7 @@ int main(int argc, char *argv[])
             numPlace++;
         }
     }
+
+    close(fd);
+    pthread_exit(0);
 }
