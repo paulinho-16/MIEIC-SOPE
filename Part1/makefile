@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -Wall -pthread
 DEPS = utils.h
-OBJS1 = U1.c utils.c
-OBJS2 = Q1.c utils.c
+OBJS1 = U1.c utilsU1.c
+OBJS2 = Q1.c utilsQ1.c
 TARGET1 = U1
 TARGET2 = Q1
 

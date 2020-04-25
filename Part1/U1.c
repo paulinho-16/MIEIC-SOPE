@@ -9,7 +9,11 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "utils.h"
+#include "utilsU1.h"
+
+// Global Variables
+char server_fifo[256];
+int nsecs;
 
 struct msg
 {
@@ -85,8 +89,12 @@ void *userThread(void *arg)
 int main(int argc, char *argv[])
 {
     if (argc != 4) {
-        print_usage_U1();
+        print_usage();
         exit(1);
+    }
+
+    if (!get_input(argc, argv)) {
+        exit(2);
     }
 
     // should be read from arguments

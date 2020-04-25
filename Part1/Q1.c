@@ -8,7 +8,11 @@
 #include <sys/file.h>
 #include <string.h>
 
-#include "utils.h"
+#include "utilsQ1.h"
+
+// Global Variables
+char server_fifo[256];
+int nsecs, nplaces, nthreads;
 
 struct msg
 {
@@ -42,31 +46,30 @@ void *serverThread(void *arg)
 int main(int argc, char *argv[])
 {
     if (argc < 4 || argc > 8) {
-        print_usage_Q1();
+        print_usage();
         exit(1);
     }
 
-    // should be read from arguments
-    const char server[] = "/tmp/fifo_req";
-    /*double nsecs=5;
-    int nplaces,nthreads*/
+    if (!get_input(argc, argv)) {
+        exit(2);
+    }
 
     int fd,numPlace=0;
 
-    if ((mkfifo(server, 0666) < 0))
+    if ((mkfifo(server_fifo, 0666) < 0))
     {
         if (errno == EEXIST)
-            printf("%s already exists\n", server);
+            printf("%s already exists\n", server_fifo);
         else
-            printf("Not able to create %s\n", server);
+            printf("Not able to create %s\n", server_fifo);
     }
     else
-        printf("%s created successfully\n", server);
+        printf("%s created successfully\n", server_fifo);
 
-    if ((fd = open(server, O_RDWR)) < 0)
-        printf("Couldn't open %s\n", server);
+    if ((fd = open(server_fifo, O_RDWR)) < 0)
+        printf("Couldn't open %s\n", server_fifo);
     else
-        printf("%s opened in RDWR mode\n", server);
+        printf("%s opened in RDWR mode\n", server_fifo);
 
     while (1)
     {
@@ -79,7 +82,7 @@ int main(int argc, char *argv[])
             if (request->dur == 0)
             {
                 printf("closing server ...\n");
-                unlink(server);
+                unlink(server_fifo);
                 exit(0);
             }
 
