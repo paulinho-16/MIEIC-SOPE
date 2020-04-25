@@ -9,6 +9,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "utils.h"
+
 struct msg
 {
     int i, pid, pl;
@@ -82,6 +84,11 @@ void *userThread(void *arg)
 
 int main(int argc, char *argv[])
 {
+    if (argc != 4) {
+        print_usage_U1();
+        exit(1);
+    }
+
     // should be read from arguments
     //const char server[] = "/tmp/fifo_req";
     //double nsecs = 2;

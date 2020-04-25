@@ -8,6 +8,8 @@
 #include <sys/file.h>
 #include <string.h>
 
+#include "utils.h"
+
 struct msg
 {
     int i, pid, pl;
@@ -37,8 +39,13 @@ void *serverThread(void *arg)
     pthread_exit(0);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc < 4 || argc > 8) {
+        print_usage_Q1();
+        exit(1);
+    }
+
     // should be read from arguments
     const char server[] = "/tmp/fifo_req";
     /*double nsecs=5;
