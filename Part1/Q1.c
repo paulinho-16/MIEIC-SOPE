@@ -20,19 +20,22 @@ struct msg
     double dur;
     pid_t pid;
     pthread_t tid;
-    char client_fifo[256];
 };
 
 void *serverThread(void *arg)
 {
+    char client_fifo[256];
+
     printf("ENTROU NA THREAD DE Q1\n");
 
     struct msg rec = *(struct msg *)arg;
     int fd;
 
+    sprintf(client_fifo, "/tmp/%d.%lu", rec.pid, rec.tid);
+
     printf("DEPOIS DOS DADOS DE Q1\n");
 
-    if ((fd = open(rec.client_fifo, O_WRONLY)) < 0)
+    if ((fd = open(client_fifo, O_WRONLY)) < 0)
         printf("Couldn't open fifo on thread\n");
     else
         printf("Processing request\n");
@@ -44,7 +47,7 @@ void *serverThread(void *arg)
     rec.pid = getpid();
     rec.tid = pthread_self();
 
-    printf("EM Q1 - FIFO_RECEBIDO: %s, PID: %d, DURACAO: %f\n", rec.client_fifo, rec.pid, rec.dur);
+    printf("EM Q1 - FIFO_RECEBIDO: %s, PID: %d, DURACAO: %f\n", client_fifo, rec.pid, rec.dur);
 
     write(fd, &rec, sizeof(struct msg));
     free((struct msg *)arg);
@@ -53,6 +56,9 @@ void *serverThread(void *arg)
 
 int main(int argc, char *argv[])
 {
+
+    char client_fifo[256];
+
     if (argc < 4 || argc > 8) {
         print_usage();
         exit(1);
@@ -79,15 +85,18 @@ int main(int argc, char *argv[])
     else
         printf("%s opened in RDONLY mode\n", server_fifo);
 
-    while (1)
+    time_t final = time(NULL) + nsecs; // tempo final
+
+    while (time(NULL) < final)
     {
         struct msg *request = malloc(sizeof(struct msg));
 
         if (read(fd, request, sizeof(struct msg)) > 0)
         {
+            sprintf(client_fifo, "/tmp/%d.%lu", request->pid, request->tid);
             request->pl=numPlace;
 
-            printf("RECEBIDO FIFO: %s\n", request->client_fifo);
+            printf("RECEBIDO FIFO: %s\n", client_fifo);
 
             if (request->dur == 0)
             {
@@ -103,5 +112,6 @@ int main(int argc, char *argv[])
     }
 
     close(fd);
+    unlink(server_fifo);
     pthread_exit(0);
 }
