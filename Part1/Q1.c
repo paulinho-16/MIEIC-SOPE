@@ -26,30 +26,35 @@ void *serverThread(void *arg)
 {
     char client_fifo[256];
 
-    printf("ENTROU NA THREAD DE Q1\n");
-
     struct msg rec = *(struct msg *)arg;
     int fd;
 
     sprintf(client_fifo, "/tmp/%d.%lu", rec.pid, rec.tid);
 
-    printf("DEPOIS DOS DADOS DE Q1\n");
+    printf("%ld ; %d ; %d ; %lu ; %f ; %d ; ENTER\n", time(NULL), rec.i, rec.pid, rec.tid, rec.dur, rec.pl);
 
-    if ((fd = open(client_fifo, O_WRONLY)) < 0)
-        printf("Couldn't open fifo on thread\n");
-    else
-        printf("Processing request\n");
-
-    printf("ANTES DO SLEEP, dur = %f\n", rec.dur);
-    sleep(rec.dur); //using bathroom
-    printf("DEPOIS DO SLEEP, dur = %f\n", rec.dur);
+    if ((fd = open(client_fifo, O_WRONLY)) < 0) {
+        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; GAVUP\n", time(NULL), rec.i, rec.pid, rec.tid, rec.dur, rec.pl);
+        pthread_exit(0);
+    }
+    //else
+        //printf("Processing request\n");
 
     rec.pid = getpid();
     rec.tid = pthread_self();
 
-    printf("EM Q1 - FIFO_RECEBIDO: %s, PID: %d, DURACAO: %f\n", client_fifo, rec.pid, rec.dur);
-
     write(fd, &rec, sizeof(struct msg));
+
+    struct timespec tim;
+    tim.tv_sec = 0;
+    tim.tv_nsec = rec.dur * 1000000L; // Em nanoseconds
+    //tim.tv_nsec = 500000000L; // Half a second
+
+    if (nanosleep(&tim, NULL) < 0) { // Using Bathroom
+        fprintf(stderr, "Nanosleep error\n");
+        exit(3);
+    }
+
     free((struct msg *)arg);
     pthread_exit(0);
 }
@@ -68,7 +73,7 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    int fd,numPlace=0;
+    int fd,numPlace = 1;
 
     if ((mkfifo(server_fifo, 0666) < 0))
     {
@@ -77,13 +82,13 @@ int main(int argc, char *argv[])
         else
             printf("Not able to create %s\n", server_fifo);
     }
-    else
-        printf("%s created successfully\n", server_fifo);
+    //else
+        //printf("%s created successfully\n", server_fifo);
 
     if ((fd = open(server_fifo, O_RDONLY)) < 0)
         printf("Couldn't open %s\n", server_fifo);
-    else
-        printf("%s opened in RDONLY mode\n", server_fifo);
+    //else
+        //printf("%s opened in RDONLY mode\n", server_fifo);
 
     time_t final = time(NULL) + nsecs; // tempo final
 
@@ -93,10 +98,11 @@ int main(int argc, char *argv[])
 
         if (read(fd, request, sizeof(struct msg)) > 0)
         {
+            // É suposto o pid e o tid serem do cliente ou do servidor??
+            printf("%ld ; %d ; %d ; %lu ; %f ; %d ; RECVD\n", time(NULL), request->i, request->pid, request->tid, request->dur, request->pl);
+
             sprintf(client_fifo, "/tmp/%d.%lu", request->pid, request->tid);
             request->pl=numPlace;
-
-            printf("RECEBIDO FIFO: %s\n", client_fifo);
 
             if (request->dur == 0)
             {
@@ -110,6 +116,12 @@ int main(int argc, char *argv[])
             numPlace++;
         }
     }
+
+    // Onde devemos meter o 2LATE?? Seria só para pedidos que fossem requisitados após encerrar o QB
+    printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), numPlace - 1, getpid(), pthread_self(), (float) nsecs, numPlace - 1);
+
+    // O que se mete no i, na dur e no pl?? Para já está o nr do último pedido, duracao total do QB e nr de pedidos atendidos
+    printf("%ld ; %d ; %d ; %lu ; %f ; %d ; TIMUP\n", time(NULL), numPlace - 1, getpid(), pthread_self(), (float) nsecs, numPlace - 1);
 
     close(fd);
     unlink(server_fifo);
