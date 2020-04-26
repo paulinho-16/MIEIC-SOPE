@@ -47,38 +47,26 @@ void *userThread(void *arg)
         else
             printf("Not able to create %s", client_fifo);
     }
-    //else
-        //printf("%s created successfully\n", client_fifo);
-
 
     if ((fd = open(server_fifo, O_WRONLY)) < 0)
         printf("Not able to open %s\n", server_fifo);
-    //else
-        //printf("%s opened in WRONLY mode\n", server_fifo);
 
     if (write(fd, &req, sizeof(req)) > 0)
-        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; IWANT\n", time(NULL), req.i, req.pid, req.tid, req.dur, req.pl);
-        //printf("Request from %s submited to server\n", client_fifo);
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; IWANT\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl);
     else
         printf("Error writing message\n");
     close(fd);
 
     if ((fd = open(client_fifo, O_RDONLY)) < 0)
         printf("Couldn't open %s'\n", client_fifo);
-    //else
-        //printf("%s opened in RDONLY mode\n", client_fifo);
 
     if (read(fd, rec, sizeof(struct msg)) < 0)
-        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; FAILD\n", time(NULL), rec->i, rec->pid, rec->tid, rec->dur, rec->pl);
-    else {
-        //printf("Request -- i:%d pid:%d pl:%d dur:%f tid:%lu client:%s\n",req.i,req.pid,req.pl,req.dur,req.tid,client_fifo);
-        //printf("Received -- i:%d pid:%d pl:%d dur:%f tid:%lu client:%s\n",rec->i,rec->pid,rec->pl,rec->dur,rec->tid,client_fifo);
-        if (rec->dur == -1)
-            printf("%ld ; %d ; %d ; %lu ; %f ; %d ; CLOSD\n", time(NULL), rec->i, rec->pid, rec->tid, rec->dur, rec->pl);
-        else
-            printf("%ld ; %d ; %d ; %lu ; %f ; %d ; IAMIN\n", time(NULL), rec->i, rec->pid, rec->tid, rec->dur, rec->pl);
-    }
-
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; FAILD\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl);
+    else if(rec->dur == -1)
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; CLOSD\n",time(NULL),req.i,req.pid,req.tid,rec->dur,rec->pl);
+    else
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; IAMIN\n",time(NULL),req.i,req.pid,req.tid,rec->dur,rec->pl);
+    
     unlink(client_fifo);
     free((struct msg *)arg);
     free(rec);
@@ -118,6 +106,5 @@ int main(int argc, char *argv[])
         i++;
     }
 
-    
     pthread_exit(0);
 }

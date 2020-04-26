@@ -25,30 +25,27 @@ struct msg
 void *serverThread(void *arg)
 {
     char client_fifo[256];
-
-    struct msg rec = *(struct msg *)arg;
     int fd;
-
+    struct msg rec = *(struct msg *)arg;
     sprintf(client_fifo, "/tmp/%d.%lu", rec.pid, rec.tid);
-
-    printf("%ld ; %d ; %d ; %lu ; %f ; %d ; ENTER\n", time(NULL), rec.i, rec.pid, rec.tid, rec.dur, rec.pl);
-
-    if ((fd = open(client_fifo, O_WRONLY)) < 0) {
-        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; GAVUP\n", time(NULL), rec.i, rec.pid, rec.tid, rec.dur, rec.pl);
-        pthread_exit(0);
-    }
-    //else
-        //printf("Processing request\n");
-
     rec.pid = getpid();
     rec.tid = pthread_self();
 
-    write(fd, &rec, sizeof(struct msg));
+    printf("%lu ; %d ; %d ; %lu ; %f ; %d ; RECVD\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl); 
+
+    if ((fd = open(client_fifo, O_WRONLY)) < 0){
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; GAVUP\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
+        pthread_exit(0);
+    }
+    else{
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; ENTER\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
+        if(write(fd, &rec, sizeof(struct msg))<0)
+            printf("Error writing answer to client\n");
+    }
 
     struct timespec tim;
     tim.tv_sec = 0;
     tim.tv_nsec = rec.dur * 1000000L; // Em nanoseconds
-    //tim.tv_nsec = 500000000L; // Half a second
 
     if (nanosleep(&tim, NULL) < 0) { // Using Bathroom
         fprintf(stderr, "Nanosleep error\n");
@@ -82,25 +79,18 @@ int main(int argc, char *argv[])
         else
             printf("Not able to create %s\n", server_fifo);
     }
-    //else
-        //printf("%s created successfully\n", server_fifo);
 
     if ((fd = open(server_fifo, O_RDONLY)) < 0)
         printf("Couldn't open %s\n", server_fifo);
-    //else
-        //printf("%s opened in RDONLY mode\n", server_fifo);
 
     time_t final = time(NULL) + nsecs; // tempo final
 
-    while (time(NULL) < final)
+    while (time(NULL) <= final)
     {
         struct msg *request = malloc(sizeof(struct msg));
 
         if (read(fd, request, sizeof(struct msg)) > 0)
         {
-            // É suposto o pid e o tid serem do cliente ou do servidor??
-            printf("%ld ; %d ; %d ; %lu ; %f ; %d ; RECVD\n", time(NULL), request->i, request->pid, request->tid, request->dur, request->pl);
-
             sprintf(client_fifo, "/tmp/%d.%lu", request->pid, request->tid);
             request->pl=numPlace;
 
