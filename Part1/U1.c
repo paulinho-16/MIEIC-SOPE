@@ -56,7 +56,8 @@ void *userThread(void *arg)
         printf("%s opened in WRONLY mode\n", server_fifo);
 
     if (write(fd, &req, sizeof(req)) > 0)
-        printf("Request from %s submited to server\n", client_fifo);
+        //printf("Request from %s submited to server\n", client_fifo);
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; %s\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl,"IWANT");
     else
         printf("Error writing message\n");
     close(fd);
@@ -67,13 +68,14 @@ void *userThread(void *arg)
         printf("%s opened in RDONLY mode\n", client_fifo);
 
     if (read(fd, rec, sizeof(struct msg)) < 0)
-        printf("Failed to read response from server\n");
-    else {
-        printf("Request -- i:%d pid:%d pl:%d dur:%f tid:%lu client:%s\n",req.i,req.pid,req.pl,req.dur,req.tid,client_fifo);
-        printf("Received -- i:%d pid:%d pl:%d dur:%f tid:%lu client:%s\n",rec->i,rec->pid,rec->pl,rec->dur,rec->tid,client_fifo);
-    }
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; %s\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl,"FAILD");
+    else if(rec->dur==0)
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; %s\n",time(NULL),req.i,req.pid,req.tid,rec->dur,rec->pl,"CLOSD");
+    else
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; %s\n",time(NULL),req.i,req.pid,req.tid,rec->dur,rec->pl,"IAMIN");
+    
 
-    sleep(10);                      // DEBUG
+    //sleep(10);                      // DEBUG
     unlink(client_fifo);
     free((struct msg *)arg);
     free(rec);
@@ -103,6 +105,8 @@ int main(int argc, char *argv[])
         pthread_t thread;
         pthread_create(&thread, NULL, userThread, request);
         i++;
+
+        sleep(2);       //DEBUG
     }
 
     

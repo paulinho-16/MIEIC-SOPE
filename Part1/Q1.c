@@ -25,31 +25,31 @@ struct msg
 void *serverThread(void *arg)
 {
     char client_fifo[256];
-
-    printf("ENTROU NA THREAD DE Q1\n");
-
-    struct msg rec = *(struct msg *)arg;
     int fd;
-
+    struct msg rec = *(struct msg *)arg;
     sprintf(client_fifo, "/tmp/%d.%lu", rec.pid, rec.tid);
-
-    printf("DEPOIS DOS DADOS DE Q1\n");
-
-    if ((fd = open(client_fifo, O_WRONLY)) < 0)
-        printf("Couldn't open fifo on thread\n");
-    else
-        printf("Processing request\n");
-
-    printf("ANTES DO SLEEP, dur = %f\n", rec.dur);
-    sleep(rec.dur); //using bathroom
-    printf("DEPOIS DO SLEEP, dur = %f\n", rec.dur);
-
     rec.pid = getpid();
     rec.tid = pthread_self();
 
-    printf("EM Q1 - FIFO_RECEBIDO: %s, PID: %d, DURACAO: %f\n", client_fifo, rec.pid, rec.dur);
+    printf("%lu ; %d ; %d ; %lu ; %f ; %d ; %s\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl,"RECVD"); 
 
-    write(fd, &rec, sizeof(struct msg));
+
+    if ((fd = open(client_fifo, O_WRONLY)) < 0){
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; %s\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl,"GAVUP");
+        pthread_exit(0);
+    }
+    else{
+         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; %s\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl,"ENTER");
+         if(write(fd, &rec, sizeof(struct msg))<0)
+            printf("Error writing answer to client\n");
+    }
+
+    //printf("ANTES DO SLEEP, dur = %f\n", rec.dur);
+    sleep(rec.dur); //using bathroom
+    //printf("DEPOIS DO SLEEP, dur = %f\n", rec.dur);
+
+    printf("%lu ; %d ; %d ; %lu ; %f ; %d ; %s\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl,"TIMUP");
+        
     free((struct msg *)arg);
     pthread_exit(0);
 }
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 
     time_t final = time(NULL) + nsecs; // tempo final
 
-    while (time(NULL) < final)
+    while (time(NULL) <= final)
     {
         struct msg *request = malloc(sizeof(struct msg));
 
@@ -95,8 +95,6 @@ int main(int argc, char *argv[])
         {
             sprintf(client_fifo, "/tmp/%d.%lu", request->pid, request->tid);
             request->pl=numPlace;
-
-            printf("RECEBIDO FIFO: %s\n", client_fifo);
 
             if (request->dur == 0)
             {
