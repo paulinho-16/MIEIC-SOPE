@@ -7,12 +7,14 @@
 #include <errno.h>
 #include <sys/file.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "utilsQ1.h"
 
 // Global Variables
 char server_fifo[256];
 int nsecs, nplaces, nthreads;
+time_t final;
 
 struct msg
 {
@@ -27,11 +29,21 @@ void *serverThread(void *arg)
     char client_fifo[256];
     int fd;
     struct msg rec = *(struct msg *)arg;
+    bool late=false;
     sprintf(client_fifo, "/tmp/%d.%lu", rec.pid, rec.tid);
     rec.pid = getpid();
     rec.tid = pthread_self();
 
-    printf("%lu ; %d ; %d ; %lu ; %f ; %d ; RECVD\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl); 
+    struct timespec tim;
+    tim.tv_sec = 0;
+    tim.tv_nsec = rec.dur * 1000000L; // Em nanoseconds
+
+    if(time(NULL)+rec.dur/1000>(double)final){
+        late=true;
+        rec.dur=-1;
+    }
+
+    printf("%lu ; %d ; %d ; %lu ; %f ; %d ; RECVD\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl);
 
     if ((fd = open(client_fifo, O_WRONLY)) < 0){
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; GAVUP\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
@@ -43,16 +55,15 @@ void *serverThread(void *arg)
             printf("Error writing answer to client\n");
     }
 
-    struct timespec tim;
-    tim.tv_sec = 0;
-    tim.tv_nsec = rec.dur * 1000000L; // Em nanoseconds
-
     if (nanosleep(&tim, NULL) < 0) { // Using Bathroom
         fprintf(stderr, "Nanosleep error\n");
         exit(3);
     }
 
-    printf("%ld ; %d ; %d ; %lu ; %f ; %d ; TIMUP\n", time(NULL), rec.i, getpid(), pthread_self(), rec.dur, rec.pl);
+    if(late)
+        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), rec.i, getpid(), pthread_self(), rec.dur, rec.pl);
+    else
+        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; TIMUP\n", time(NULL), rec.i, getpid(), pthread_self(), rec.dur, rec.pl);
 
     free((struct msg *)arg);
     pthread_exit(0);
@@ -85,7 +96,7 @@ int main(int argc, char *argv[])
     if ((fd = open(server_fifo, O_RDONLY)) < 0)
         printf("Couldn't open %s\n", server_fifo);
 
-    time_t final = time(NULL) + nsecs; // tempo final
+    final = time(NULL) + nsecs; // tempo final
 
     while (time(NULL) <= final)
     {
@@ -108,9 +119,6 @@ int main(int argc, char *argv[])
             numPlace++;
         }
     }
-
-    // Onde devemos meter o 2LATE?? Seria só para pedidos que fossem requisitados após encerrar o QB
-    printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), numPlace - 1, getpid(), pthread_self(), (float) nsecs, numPlace - 1);
 
     close(fd);
     unlink(server_fifo);
