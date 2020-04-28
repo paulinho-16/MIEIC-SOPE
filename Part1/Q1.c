@@ -52,6 +52,8 @@ void *serverThread(void *arg)
         exit(3);
     }
 
+    printf("%ld ; %d ; %d ; %lu ; %f ; %d ; TIMUP\n", time(NULL), rec.i, getpid(), pthread_self(), rec.dur, rec.pl);
+
     free((struct msg *)arg);
     pthread_exit(0);
 }
@@ -109,9 +111,6 @@ int main(int argc, char *argv[])
 
     // Onde devemos meter o 2LATE?? Seria só para pedidos que fossem requisitados após encerrar o QB
     printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), numPlace - 1, getpid(), pthread_self(), (float) nsecs, numPlace - 1);
-
-    // O que se mete no i, na dur e no pl?? Para já está o nr do último pedido, duracao total do QB e nr de pedidos atendidos
-    printf("%ld ; %d ; %d ; %lu ; %f ; %d ; TIMUP\n", time(NULL), numPlace - 1, getpid(), pthread_self(), (float) nsecs, numPlace - 1);
 
     close(fd);
     unlink(server_fifo);

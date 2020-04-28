@@ -37,24 +37,30 @@ void *userThread(void *arg)
     req.tid = pthread_self();
     sprintf(client_fifo, "/tmp/%d.%lu", req.pid, req.tid);
 
-    req.dur = 2; //should be randomized
+    req.dur = rand() % 41 + 10; // Random between 10 and 50 ms
     req.pl = -1;
 
     if ((mkfifo(client_fifo, 0666) < 0))
     {
         if (errno == EEXIST)
             printf("%s already exists\n", client_fifo);
-        else
+        else {
             printf("Not able to create %s", client_fifo);
+            pthread_exit(0);
+        }
     }
 
-    if ((fd = open(server_fifo, O_WRONLY)) < 0)
-        printf("Not able to open %s\n", server_fifo);
+    if ((fd = open(server_fifo, O_WRONLY)) < 0) {
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; FAILD\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl);printf("Not able to open %s\n", server_fifo);
+    }
 
     if (write(fd, &req, sizeof(req)) > 0)
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; IWANT\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl);
-    else
-        printf("Error writing message\n");
+    else {
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; FAILD\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl);
+        close(fd);
+        pthread_exit(0);
+    }
     close(fd);
 
     if ((fd = open(client_fifo, O_RDONLY)) < 0)
@@ -85,10 +91,11 @@ int main(int argc, char *argv[])
     }
 
     time_t final = time(NULL) + nsecs;
+    srand(time(NULL));
 
     struct timespec tim;
     tim.tv_sec = 0;
-    tim.tv_nsec = 500000000L; // Half a second
+    tim.tv_nsec = 250000000L; // 1/4 de segundo
 
     int i = 1;
     while(time(NULL) < final)
