@@ -15,7 +15,7 @@
 // Global Variables
 char server_fifo[256];
 int nsecs;
-
+bool closed;
 
 struct msg
 {
@@ -51,7 +51,9 @@ void *userThread(void *arg)
     }
 
     if ((fd = open(server_fifo, O_WRONLY)) < 0) {
-        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; FAILD\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl);printf("Not able to open %s\n", server_fifo);
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; FAILD\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl);
+        close(fd);
+        pthread_exit(0);
     }
 
     if (write(fd, &req, sizeof(req)) > 0)
@@ -68,8 +70,10 @@ void *userThread(void *arg)
 
     if (read(fd, rec, sizeof(struct msg)) < 0)
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; FAILD\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl);
-    else if(rec->dur == -1)
+    else if(rec->dur == -1) {
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; CLOSD\n",time(NULL),req.i,req.pid,req.tid,rec->dur,rec->pl);
+        closed = true;
+    }
     else
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; IAMIN\n",time(NULL),req.i,req.pid,req.tid,rec->dur,rec->pl);
     
@@ -98,8 +102,11 @@ int main(int argc, char *argv[])
     tim.tv_nsec = 250000000L; // 1/4 de segundo
 
     int i = 1;
+    closed = false;
     while(time(NULL) < final)
     {
+        if (closed)
+            break;
         if (nanosleep(&tim, NULL) < 0) {
             fprintf(stderr, "Nanosleep error\n");
             exit(3);
