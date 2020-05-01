@@ -69,10 +69,20 @@ void *serverThread(void *arg)
     pthread_exit(0);
 }
 
+void *firstClient(void *arg){
+    int *fd =  (int *)arg;
+
+    if ((*fd = open(server_fifo, O_RDONLY)) < 0)
+        printf("Couldn't open %s\n", server_fifo);
+
+    pthread_exit(0);
+}
+
 int main(int argc, char *argv[])
 {
 
     char client_fifo[256];
+    pthread_t readThread;
 
     if (argc < 4 || argc > 8) {
         print_usage();
@@ -83,7 +93,8 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    int fd,numPlace = 1;
+    final = time(NULL) + nsecs; // tempo final
+    int fd=-1,numPlace = 1;
 
     if ((mkfifo(server_fifo, 0666) < 0))
     {
@@ -93,10 +104,14 @@ int main(int argc, char *argv[])
             printf("Not able to create %s\n", server_fifo);
     }
 
-    if ((fd = open(server_fifo, O_RDONLY)) < 0)
-        printf("Couldn't open %s\n", server_fifo);
+    pthread_create(&readThread,NULL,firstClient,&fd);
 
-    final = time(NULL) + nsecs; // tempo final
+    while(fd==-1){
+        if(time(NULL) > final){
+            printf("closing server ...\n");
+            exit(0);
+        }
+    }
 
     while (time(NULL) <= final)
     {
