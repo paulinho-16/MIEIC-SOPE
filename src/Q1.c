@@ -69,6 +69,7 @@ void *serverThread(void *arg)
     pthread_exit(0);
 }
 
+// Thread que garante que o Bathroom encerra mesmo sem ter recebido qualquer pedido
 void *firstClient(void *arg){
     int *fd =  (int *)arg;
 
@@ -108,7 +109,7 @@ int main(int argc, char *argv[])
 
     while(fd==-1){
         if(time(NULL) > final){
-            printf("closing server ...\n");
+            printf("Closing Bathroom ...\n");
             exit(0);
         }
     }
@@ -121,13 +122,6 @@ int main(int argc, char *argv[])
         {
             sprintf(client_fifo, "/tmp/%d.%lu", request->pid, request->tid);
             request->pl=numPlace;
-
-            if (request->dur == 0)
-            {
-                printf("closing server ...\n");
-                unlink(server_fifo);
-                exit(0);
-            }
 
             pthread_t thread;
             pthread_create(&thread, NULL, serverThread, request);
