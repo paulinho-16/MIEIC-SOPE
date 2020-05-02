@@ -110,6 +110,7 @@ int main(int argc, char *argv[])
     while(fd==-1){
         if(time(NULL) > final){
             printf("Closing Bathroom ...\n");
+            unlink(server_fifo);
             exit(0);
         }
     }
