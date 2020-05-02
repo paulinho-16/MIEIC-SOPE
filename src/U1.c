@@ -12,6 +12,8 @@
 
 #include "utilsU1.h"
 
+#define REQUESTS_INTERVAL 250000000L     // 1/4 de segundo
+
 // Global Variables
 char server_fifo[256];
 int nsecs;
@@ -99,7 +101,7 @@ int main(int argc, char *argv[])
 
     struct timespec tim;
     tim.tv_sec = 0;
-    tim.tv_nsec = 250000000L; // 1/4 de segundo
+    tim.tv_nsec = REQUESTS_INTERVAL;
 
     int i = 1;
     closed = false;
