@@ -1,6 +1,5 @@
 CC = gcc
 CFLAGS = -Wall -pthread -lrt
-DEPS = utils.h
 OBJS1 = U2.c utilsU2.c
 OBJS2 = Q2.c utilsQ2.c
 TARGET1 = U2
