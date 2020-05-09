@@ -97,6 +97,13 @@ void *serverThread(void *arg)
             fprintf(stderr, "Error writing answer to client\n");
         close(fd_client);
         free((struct msg *)arg);
+        
+        if(nplaces!=-1){
+            pthread_mutex_lock(&mutexPlaces);
+            bathroom->occupied=false;
+            sem_post(&sem);
+            pthread_mutex_unlock(&mutexPlaces);
+        }
         pthread_exit(0);
     }
     else {
