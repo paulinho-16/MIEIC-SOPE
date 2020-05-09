@@ -19,7 +19,7 @@
 char server_fifo[256];
 int nsecs;
 bool closed;
-int fd_server;
+bool not_available = false;
 
 struct msg
 {
@@ -37,7 +37,7 @@ void sigalarm_handler(int signo) {
 void *userThread(void *arg)
 {
     char client_fifo[256];
-    int fd_client;
+    int fd_client, fd_server;
     struct msg req = *(struct msg *)arg; //request
     struct msg *rec = (struct msg *)malloc(sizeof(struct msg)); //received
 
@@ -58,6 +58,19 @@ void *userThread(void *arg)
         }
     }
 
+    if ((fd_server = open(server_fifo, O_WRONLY)) < 0) {
+        if (!not_available) {
+            fprintf(stderr, "Bathroom is not available (Server FIFO not found)\n");
+            not_available = true;
+        }
+        //closed = true;
+        close(fd_server);
+        unlink(client_fifo);
+        free((struct msg *)arg);
+        free(rec);
+        pthread_exit(0);
+    }
+
     if (write(fd_server, &req, sizeof(req)) > 0)
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; IWANT\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl);
     else {
@@ -75,7 +88,7 @@ void *userThread(void *arg)
     }
     else if(rec->dur == -1 && rec->pl == -1) {
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; CLOSD\n",time(NULL),req.i,req.pid,req.tid,rec->dur,rec->pl);
-        //closed = true;
+        closed = true;
     }
     else
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; IAMIN\n",time(NULL),req.i,req.pid,req.tid,rec->dur,rec->pl);
@@ -109,18 +122,12 @@ int main(int argc, char *argv[])
 
     alarm(nsecs);
 
-    if ((fd_server = open(server_fifo, O_WRONLY)) < 0) {
-        fprintf(stderr, "Bathroom is not available (Server FIFO not found)\n");
-        close(fd_server);
-        pthread_exit(0);
-    }
-
     int i = 1;
     closed = false;
     while(true)
     {
-        //if (closed)
-            //break;
+        if (closed)
+            break;
         usleep(10000);  // 10 ms entre cada pedido
         struct msg *request = (struct msg *)malloc(sizeof(struct msg));
 
