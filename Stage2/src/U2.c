@@ -67,20 +67,15 @@ void *userThread(void *arg)
     }
 
     if ((fd_client = open(client_fifo, O_RDONLY)) < 0) {
-        //printf("Couldn't open %s\n", client_fifo);
-        close(fd_client);
         perror("Error opening Client FIFO");
     }
 
     if (read(fd_client, rec, sizeof(struct msg)) < 0) {
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; FAILD\n",time(NULL),req.i,req.pid,req.tid,req.dur,req.pl);
-        close(fd_client);
-        unlink(client_fifo);
-        pthread_exit(0);
     }
-    else if(rec->dur == -1) {
+    else if(rec->dur == -1 && rec->pl == -1) {
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; CLOSD\n",time(NULL),req.i,req.pid,req.tid,rec->dur,rec->pl);
-        closed = true;
+        //closed = true;
     }
     else
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; IAMIN\n",time(NULL),req.i,req.pid,req.tid,rec->dur,rec->pl);
@@ -115,7 +110,7 @@ int main(int argc, char *argv[])
     alarm(nsecs);
 
     if ((fd_server = open(server_fifo, O_WRONLY)) < 0) {
-        printf("PROBLEMAS NO OPEN()\n");
+        fprintf(stderr, "Bathroom is not available (Server FIFO not found)\n");
         close(fd_server);
         pthread_exit(0);
     }
@@ -124,8 +119,8 @@ int main(int argc, char *argv[])
     closed = false;
     while(true)
     {
-        if (closed)
-            break;
+        //if (closed)
+            //break;
         usleep(10000);  // 10 ms entre cada pedido
         struct msg *request = (struct msg *)malloc(sizeof(struct msg));
 

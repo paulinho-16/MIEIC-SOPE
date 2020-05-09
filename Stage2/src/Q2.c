@@ -22,6 +22,7 @@ char server_fifo[256];
 int nsecs, nplaces=-1, nthreads=-1;
 time_t final;
 int fd_server = -1;
+bool late = false;
 
 sem_t sem;
 pthread_mutex_t mutexPlaces = PTHREAD_MUTEX_INITIALIZER;
@@ -46,12 +47,13 @@ struct room * getEmptyRoom(){
             return rooms[i];
     }
 
-    perror("reached end of getEmptyRoom\n");
+    perror("Reached end of getEmptyRoom");
     return NULL;
 }
 
 void sigalarm_handler(int signo) {
-    printf("In SIGALRM handler ...\n");
+    printf("Bathroom Closing ...\n");
+    late = true;
     close(fd_server);
     unlink(server_fifo);
     pthread_exit(0);
@@ -61,7 +63,6 @@ void *serverThread(void *arg)
 {
     char client_fifo[256];
     struct msg rec = *(struct msg *)arg;
-    bool late=false;
     sprintf(client_fifo, "/tmp/%d.%lu", rec.pid, rec.tid);
     rec.pid = getpid();
     rec.tid = pthread_self();
@@ -85,23 +86,31 @@ void *serverThread(void *arg)
 
     if ((fd_client = open(client_fifo, O_WRONLY)) < 0){
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; GAVUP\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
-        printf("ERROR: %s\n", strerror(errno));
         pthread_exit(0);
     }
     else{
-        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; ENTER\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
-        if(write(fd_client, &rec, sizeof(struct msg))<0)
-            printf("Error writing answer to client\n");
+        if(late) {
+            printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), rec.i, getpid(), pthread_self(), (double) -1, -1);
+            rec.pl = -1;
+            rec.dur = -1;
+            if(write(fd_client, &rec, sizeof(struct msg)) < 0)
+                fprintf(stderr, "Error writing answer to client\n");
+            close(fd_client);
+            free((struct msg *)arg);
+            pthread_exit(0);
+        }
+        else {
+            printf("%lu ; %d ; %d ; %lu ; %f ; %d ; ENTER\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
+            if(write(fd_client, &rec, sizeof(struct msg)) < 0)
+                fprintf(stderr, "Error writing answer to client\n");
+        }
     }
 
     close(fd_client);
 
     usleep(rec.dur * 1000);
 
-    if(late)
-        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), rec.i, getpid(), pthread_self(), rec.dur, rec.pl);
-    else
-        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; TIMUP\n", time(NULL), rec.i, getpid(), pthread_self(), rec.dur, rec.pl);
+    printf("%ld ; %d ; %d ; %lu ; %f ; %d ; TIMUP\n", time(NULL), rec.i, getpid(), pthread_self(), rec.dur, rec.pl);
 
     if(nplaces!=-1){
         sem_post(&sem);
@@ -158,6 +167,8 @@ int main(int argc, char *argv[])
         else
             printf("Not able to create %s\n", server_fifo);
     }
+
+    printf("Bathroom Opening ...\n");
 
     if ((fd_server = open(server_fifo, O_RDONLY)) < 0)
         printf("Couldn't open %s\n", server_fifo);
