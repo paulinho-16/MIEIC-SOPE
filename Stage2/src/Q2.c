@@ -88,22 +88,21 @@ void *serverThread(void *arg)
         bathroom->occupied=true;
         pthread_mutex_unlock(&mutexPlaces);
     }
-    else{
-        if(late) {
-            printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), rec.i, getpid(), pthread_self(), (double) -1, -1);
-            rec.pl = -1;
-            rec.dur = -1;
-            if(write(fd_client, &rec, sizeof(struct msg)) < 0)
-                fprintf(stderr, "Error writing answer to client\n");
-            close(fd_client);
-            free((struct msg *)arg);
-            pthread_exit(0);
-        }
-        else {
-            printf("%lu ; %d ; %d ; %lu ; %f ; %d ; ENTER\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
-            if(write(fd_client, &rec, sizeof(struct msg)) < 0)
-                fprintf(stderr, "Error writing answer to client\n");
-        }
+    
+    if(late) {
+        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), rec.i, getpid(), pthread_self(), (double) -1, -1);
+        rec.pl = -1;
+        rec.dur = -1;
+        if(write(fd_client, &rec, sizeof(struct msg)) < 0)
+            fprintf(stderr, "Error writing answer to client\n");
+        close(fd_client);
+        free((struct msg *)arg);
+        pthread_exit(0);
+    }
+    else {
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; ENTER\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
+        if(write(fd_client, &rec, sizeof(struct msg)) < 0)
+            fprintf(stderr, "Error writing answer to client\n");
     }
 
     close(fd_client);
