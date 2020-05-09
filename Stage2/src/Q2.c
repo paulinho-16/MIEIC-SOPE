@@ -75,6 +75,11 @@ void *serverThread(void *arg)
 
     printf("%lu ; %d ; %d ; %lu ; %f ; %d ; RECVD\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl);
 
+    if ((fd_client = open(client_fifo, O_WRONLY)) < 0){
+        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; GAVUP\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
+        pthread_exit(0);
+    }
+
     if(nplaces!=-1){
         sem_wait(&sem);
         pthread_mutex_lock(&mutexPlaces);
@@ -82,11 +87,6 @@ void *serverThread(void *arg)
         rec.pl=bathroom->doorNumber;
         bathroom->occupied=true;
         pthread_mutex_unlock(&mutexPlaces);
-    }
-
-    if ((fd_client = open(client_fifo, O_WRONLY)) < 0){
-        printf("%lu ; %d ; %d ; %lu ; %f ; %d ; GAVUP\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
-        pthread_exit(0);
     }
     else{
         if(late) {
@@ -113,9 +113,9 @@ void *serverThread(void *arg)
     printf("%ld ; %d ; %d ; %lu ; %f ; %d ; TIMUP\n", time(NULL), rec.i, getpid(), pthread_self(), rec.dur, rec.pl);
 
     if(nplaces!=-1){
-        sem_post(&sem);
         pthread_mutex_lock(&mutexPlaces);
         bathroom->occupied=false;
+        sem_post(&sem);
         pthread_mutex_unlock(&mutexPlaces);
     }
 
