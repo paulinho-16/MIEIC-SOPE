@@ -31,7 +31,7 @@ struct msg
 
 void sigalarm_handler(int signo) {
     printf("In SIGALRM handler ...\n");
-    exit(0);
+    pthread_exit(0);
 }
 
 void *userThread(void *arg)

@@ -54,7 +54,7 @@ void sigalarm_handler(int signo) {
     printf("In SIGALRM handler ...\n");
     close(fd_server);
     unlink(server_fifo);
-    exit(0);
+    pthread_exit(0);
 }
 
 void *serverThread(void *arg)
@@ -68,6 +68,9 @@ void *serverThread(void *arg)
     struct room *bathroom;
 
     int fd_client;
+
+    if(nplaces!=-1)
+        rec.pl=-1;
 
     printf("%lu ; %d ; %d ; %lu ; %f ; %d ; RECVD\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl);
 
@@ -166,7 +169,7 @@ int main(int argc, char *argv[])
         if (read(fd_server, request, sizeof(struct msg)) > 0)
         {
             sprintf(client_fifo, "/tmp/%d.%lu", request->pid, request->tid);
-            request->pl=-1; //this has to be numplace for it to work without -l lag
+            request->pl=numPlace; 
 
             pthread_t thread;
             pthread_create(&thread, NULL, serverThread, request);
