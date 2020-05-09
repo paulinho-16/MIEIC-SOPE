@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -9,14 +11,26 @@
 #include <string.h>
 #include <stdbool.h>
 #include <signal.h>
+#include <semaphore.h>
 
 #include "utilsQ2.h"
 
+#define MAX_ROOM_NUMBERS 100
+
 // Global Variables
 char server_fifo[256];
-int nsecs, nplaces, nthreads;
+int nsecs, nplaces=-1, nthreads=-1;
 time_t final;
 int fd_server = -1;
+
+sem_t sem;
+pthread_mutex_t mutexPlaces = PTHREAD_MUTEX_INITIALIZER;
+struct room *rooms[MAX_ROOM_NUMBERS];
+
+struct room{
+    int doorNumber;
+    bool occupied;
+};
 
 struct msg
 {
@@ -26,11 +40,21 @@ struct msg
     pthread_t tid;
 };
 
+struct room * getEmptyRoom(){
+    for(int i=0;i<nplaces;i++){
+        if(rooms[i]->occupied==false)
+            return rooms[i];
+    }
+
+    perror("reached end of getEmptyRoom\n");
+    return NULL;
+}
+
 void sigalarm_handler(int signo) {
     printf("In SIGALRM handler ...\n");
     close(fd_server);
     unlink(server_fifo);
-    pthread_exit(0);
+    exit(0);
 }
 
 void *serverThread(void *arg)
@@ -41,10 +65,20 @@ void *serverThread(void *arg)
     sprintf(client_fifo, "/tmp/%d.%lu", rec.pid, rec.tid);
     rec.pid = getpid();
     rec.tid = pthread_self();
+    struct room *bathroom;
 
     int fd_client;
 
     printf("%lu ; %d ; %d ; %lu ; %f ; %d ; RECVD\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl);
+
+    if(nplaces!=-1){
+        sem_wait(&sem);
+        pthread_mutex_lock(&mutexPlaces);
+        bathroom=getEmptyRoom();
+        rec.pl=bathroom->doorNumber;
+        bathroom->occupied=true;
+        pthread_mutex_unlock(&mutexPlaces);
+    }
 
     if ((fd_client = open(client_fifo, O_WRONLY)) < 0){
         printf("%lu ; %d ; %d ; %lu ; %f ; %d ; GAVUP\n",time(NULL),rec.i,getpid(),pthread_self(),rec.dur,rec.pl);
@@ -66,6 +100,13 @@ void *serverThread(void *arg)
     else
         printf("%ld ; %d ; %d ; %lu ; %f ; %d ; TIMUP\n", time(NULL), rec.i, getpid(), pthread_self(), rec.dur, rec.pl);
 
+    if(nplaces!=-1){
+        sem_post(&sem);
+        pthread_mutex_lock(&mutexPlaces);
+        bathroom->occupied=false;
+        pthread_mutex_unlock(&mutexPlaces);
+    }
+
     free((struct msg *)arg);
     pthread_exit(0);
 }
@@ -85,6 +126,16 @@ int main(int argc, char *argv[])
     }
 
     int numPlace = 1;
+    
+    if(nplaces!=-1){
+        sem_init(&sem,0,nplaces);
+        for(int i=1;i<=nplaces;i++){
+            struct room *r = (struct room *)malloc(sizeof(struct room));
+            r->doorNumber=i;
+            r->occupied=false;
+            rooms[i-1]=r;
+        }
+    }
 
     struct sigaction conf_sinal;
     conf_sinal.sa_handler = sigalarm_handler;
@@ -115,7 +166,7 @@ int main(int argc, char *argv[])
         if (read(fd_server, request, sizeof(struct msg)) > 0)
         {
             sprintf(client_fifo, "/tmp/%d.%lu", request->pid, request->tid);
-            request->pl=numPlace;
+            request->pl=-1; //this has to be numplace for it to work without -l lag
 
             pthread_t thread;
             pthread_create(&thread, NULL, serverThread, request);

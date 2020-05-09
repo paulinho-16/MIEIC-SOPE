@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -29,7 +31,7 @@ struct msg
 
 void sigalarm_handler(int signo) {
     printf("In SIGALRM handler ...\n");
-    pthread_exit(0);
+    exit(0);
 }
 
 void *userThread(void *arg)

@@ -4,7 +4,7 @@ extern char server_fifo[256];
 extern int nsecs;
 
 void print_usage() {
-  printf("Usage: ./U1 <-t nsecs> fifoname\n\n");
+  printf("Usage: ./U2 <-t nsecs> fifoname\n\n");
   printf("   nsecs -> number of seconds that the program should work\n");
   printf("   fifoname -> name of the FIFO for communication with the server\n");
 }

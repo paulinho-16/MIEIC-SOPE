@@ -4,7 +4,7 @@ extern char server_fifo[256];
 extern int nsecs, nplaces, nthreads;
 
 void print_usage() {
-  printf("Usage: ./Q1 <-t nsecs> [-l nplaces] [-n nthreads] fifoname\n\n");
+  printf("Usage: ./Q2 <-t nsecs> [-l nplaces] [-n nthreads] fifoname\n\n");
   printf("   nsecs -> number of seconds that the program should work\n");
   printf("   nplaces -> bathroom stocking\n");
   printf("   nthreads -> maximum number of threads to fulfill requests\n");
