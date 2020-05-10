@@ -79,6 +79,8 @@ void *userThread(void *arg)
         pthread_exit(0);
     }
 
+    close(fd_server);
+
     if ((fd_client = open(client_fifo, O_RDONLY)) < 0) {
         perror("Error opening Client FIFO");
     }
