@@ -126,10 +126,8 @@ int main(int argc, char *argv[])
 
     int i = 1;
     closed = false;
-    while(true)
+    while(!not_available)
     {
-        if (closed)
-            break;
         usleep(10000);  // 10 ms entre cada pedido
         struct msg *request = (struct msg *)malloc(sizeof(struct msg));
 
