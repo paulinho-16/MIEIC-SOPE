@@ -25,6 +25,7 @@ int fd_server = -1;
 bool late = false;
 
 sem_t sem;
+sem_t sem_thread;
 pthread_mutex_t mutexPlaces = PTHREAD_MUTEX_INITIALIZER;
 struct room *rooms[MAX_ROOM_NUMBERS];
 
@@ -126,6 +127,9 @@ void *serverThread(void *arg)
     }
 
     free((struct msg *)arg);
+
+    if(nthreads!=-1) sem_post(&sem_thread);
+    
     pthread_exit(0);
 }
 
@@ -153,6 +157,10 @@ int main(int argc, char *argv[])
             r->occupied=false;
             rooms[i-1]=r;
         }
+    }
+
+    if(nthreads!=-1){
+        sem_init(&sem_thread,0,nthreads);
     }
 
     struct sigaction conf_sinal;
@@ -188,9 +196,12 @@ int main(int argc, char *argv[])
             sprintf(client_fifo, "/tmp/%d.%lu", request->pid, request->tid);
             request->pl=numPlace; 
 
+            sem_wait(&sem_thread);
+
             pthread_t thread;
             pthread_create(&thread, NULL, serverThread, request);
             numPlace++;
         }
     }
 }
+
