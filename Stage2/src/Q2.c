@@ -195,8 +195,9 @@ int main(int argc, char *argv[])
         {
             sprintf(client_fifo, "/tmp/%d.%lu", request->pid, request->tid);
             request->pl=numPlace; 
-
-            sem_wait(&sem_thread);
+            
+            if(nthreads!=-1)
+                sem_wait(&sem_thread);
 
             pthread_t thread;
             pthread_create(&thread, NULL, serverThread, request);
