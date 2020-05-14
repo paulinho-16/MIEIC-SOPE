@@ -98,6 +98,9 @@ void *serverThread(void *arg)
             sem_post(&sem);
             pthread_mutex_unlock(&mutexPlaces);
         }
+
+        if(nthreads!=-1) sem_post(&sem_thread);
+
         pthread_exit(0);
     }
     else {
@@ -127,11 +130,9 @@ void *serverThread(void *arg)
 }
 
 void *lateThreads(void *arg) {
-    printf("HELLOO\n");
     while (true) {
         struct msg *request = malloc(sizeof(struct msg));
         if (read(fd_server, request, sizeof(struct msg)) > 0) {
-            printf("HELLOO FROM INSIDE WHILE\n");
             request->pl=numPlace; 
             
             if(nthreads!=-1)
@@ -141,11 +142,9 @@ void *lateThreads(void *arg) {
             pthread_create(&thread, NULL, serverThread, request);
             numPlace++;
         }
-        else {
+        else
             break;
-        }
     }
-    printf("CHAGOU AO FINAL DO LATE THREADS\n");
     pthread_exit(0);
 }
 
@@ -155,6 +154,7 @@ void sigalarm_handler(int signo) {
     unlink(server_fifo);
     pthread_t thr;
     pthread_create(&thr, NULL, lateThreads, NULL);
+    pthread_join(thr,NULL);
     pthread_exit(0);
     /*while(read(fd_server, request, sizeof(struct msg)) > 0)  {
         printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), rec.i, getpid(), pthread_self(), (double) -1, -1);
@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
 
     printf("Bathroom Opening ...\n");
 
-    if ((fd_server = open(server_fifo, O_RDONLY)) < 0)
+    if ((fd_server = open(server_fifo, O_RDONLY )) < 0)
         printf("Couldn't open %s\n", server_fifo);
 
     while (true)
