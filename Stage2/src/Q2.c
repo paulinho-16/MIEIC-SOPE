@@ -23,6 +23,7 @@ int nsecs, nplaces=-1, nthreads=-1;
 time_t final;
 int fd_server = -1;
 bool late = false;
+int numPlace = 1;
 
 sem_t sem;
 sem_t sem_thread;
@@ -50,14 +51,6 @@ struct room * getEmptyRoom(){
 
     perror("Reached end of getEmptyRoom");
     return NULL;
-}
-
-void sigalarm_handler(int signo) {
-    printf("Bathroom Closing ...\n");
-    late = true;
-    close(fd_server);
-    unlink(server_fifo);
-    pthread_exit(0);
 }
 
 void *serverThread(void *arg)
@@ -133,11 +126,45 @@ void *serverThread(void *arg)
     pthread_exit(0);
 }
 
+void *lateThreads(void *arg) {
+    printf("HELLOO\n");
+    while (true) {
+        struct msg *request = malloc(sizeof(struct msg));
+        if (read(fd_server, request, sizeof(struct msg)) > 0) {
+            printf("HELLOO FROM INSIDE WHILE\n");
+            request->pl=numPlace; 
+            
+            if(nthreads!=-1)
+                sem_wait(&sem_thread);
+
+            pthread_t thread;
+            pthread_create(&thread, NULL, serverThread, request);
+            numPlace++;
+        }
+        else {
+            break;
+        }
+    }
+    printf("CHAGOU AO FINAL DO LATE THREADS\n");
+    pthread_exit(0);
+}
+
+void sigalarm_handler(int signo) {
+    printf("Bathroom Closing ...\n");
+    late = true;
+    unlink(server_fifo);
+    pthread_t thr;
+    pthread_create(&thr, NULL, lateThreads, NULL);
+    pthread_exit(0);
+    /*while(read(fd_server, request, sizeof(struct msg)) > 0)  {
+        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), rec.i, getpid(), pthread_self(), (double) -1, -1);
+    }*/
+    //close(fd_server);
+    //pthread_exit(0);
+}
+
 int main(int argc, char *argv[])
 {
-
-    char client_fifo[256];
-
     if (argc < 4 || argc > 8) {
         print_usage();
         exit(1);
@@ -146,8 +173,6 @@ int main(int argc, char *argv[])
     if (!get_input(argc, argv)) {
         exit(2);
     }
-
-    int numPlace = 1;
     
     if(nplaces!=-1){
         sem_init(&sem,0,nplaces);
@@ -193,7 +218,6 @@ int main(int argc, char *argv[])
 
         if (read(fd_server, request, sizeof(struct msg)) > 0)
         {
-            sprintf(client_fifo, "/tmp/%d.%lu", request->pid, request->tid);
             request->pl=numPlace; 
             
             if(nthreads!=-1)
@@ -204,5 +228,7 @@ int main(int argc, char *argv[])
             numPlace++;
         }
     }
+
+    //pthread_exit(0);
 }
 
