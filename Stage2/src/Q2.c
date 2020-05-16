@@ -152,10 +152,7 @@ void sigalarm_handler(int signo) {
     printf("Bathroom Closing ...\n");
     late = true;
     unlink(server_fifo);
-    pthread_t thr;
-    pthread_create(&thr, NULL, lateThreads, NULL);
-    pthread_join(thr,NULL);
-    pthread_exit(0);
+    return;
 }
 
 int main(int argc, char *argv[])
@@ -207,7 +204,7 @@ int main(int argc, char *argv[])
     if ((fd_server = open(server_fifo, O_RDONLY )) < 0)
         printf("Couldn't open %s\n", server_fifo);
 
-    while (true)
+    while(!late)
     {
         struct msg *request = malloc(sizeof(struct msg));
 
@@ -223,5 +220,11 @@ int main(int argc, char *argv[])
             numPlace++;
         }
     }
+
+    pthread_t thr;
+    pthread_create(&thr, NULL, lateThreads, NULL);
+    pthread_join(thr,NULL);
+
+    pthread_exit(0);
 }
 
