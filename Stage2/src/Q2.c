@@ -64,8 +64,6 @@ void *serverThread(void *arg)
 
     int fd_client;
 
-    if(nplaces!=-1)
-        rec.pl=-1;
 
     printf("%lu ; %d ; %d ; %lu ; %f ; %d ; RECVD\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl);
 
@@ -91,6 +89,8 @@ void *serverThread(void *arg)
             fprintf(stderr, "Error writing answer to client\n");
         close(fd_client);
         free((struct msg *)arg);
+
+        if(nthreads!=-1) sem_post(&sem_thread);
         
         if(nplaces!=-1){
             pthread_mutex_lock(&mutexPlaces);
@@ -98,8 +98,6 @@ void *serverThread(void *arg)
             sem_post(&sem);
             pthread_mutex_unlock(&mutexPlaces);
         }
-
-        if(nthreads!=-1) sem_post(&sem_thread);
 
         pthread_exit(0);
     }
@@ -115,6 +113,8 @@ void *serverThread(void *arg)
 
     printf("%ld ; %d ; %d ; %lu ; %f ; %d ; TIMUP\n", time(NULL), rec.i, getpid(), pthread_self(), rec.dur, rec.pl);
 
+    if(nthreads!=-1) sem_post(&sem_thread);
+
     if(nplaces!=-1){
         pthread_mutex_lock(&mutexPlaces);
         bathroom->occupied=false;
@@ -123,8 +123,6 @@ void *serverThread(void *arg)
     }
 
     free((struct msg *)arg);
-
-    if(nthreads!=-1) sem_post(&sem_thread);
     
     pthread_exit(0);
 }
@@ -223,8 +221,6 @@ int main(int argc, char *argv[])
 
     pthread_t thr;
     pthread_create(&thr, NULL, lateThreads, NULL);
-    pthread_join(thr,NULL);
-
     pthread_exit(0);
 }
 
