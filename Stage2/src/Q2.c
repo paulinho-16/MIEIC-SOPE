@@ -64,6 +64,8 @@ void *serverThread(void *arg)
 
     int fd_client;
 
+    if(nthreads!=-1)
+        rec.pl=-1;
 
     printf("%lu ; %d ; %d ; %lu ; %f ; %d ; RECVD\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl);
 
