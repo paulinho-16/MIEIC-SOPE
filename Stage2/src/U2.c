@@ -30,7 +30,7 @@ struct msg
 };
 
 void sigalarm_handler(int signo) {
-    printf("In SIGALRM handler ...\n");
+    printf("Client Time Ended...\n");
     pthread_exit(0);
 }
 
@@ -63,7 +63,6 @@ void *userThread(void *arg)
             fprintf(stderr, "Bathroom is not available (Server FIFO not found)\n");
             not_available = true;
         }
-        //closed = true;
         close(fd_server);
         unlink(client_fifo);
         free((struct msg *)arg);

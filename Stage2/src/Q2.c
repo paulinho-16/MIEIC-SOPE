@@ -156,11 +156,6 @@ void sigalarm_handler(int signo) {
     pthread_create(&thr, NULL, lateThreads, NULL);
     pthread_join(thr,NULL);
     pthread_exit(0);
-    /*while(read(fd_server, request, sizeof(struct msg)) > 0)  {
-        printf("%ld ; %d ; %d ; %lu ; %f ; %d ; 2LATE\n", time(NULL), rec.i, getpid(), pthread_self(), (double) -1, -1);
-    }*/
-    //close(fd_server);
-    //pthread_exit(0);
 }
 
 int main(int argc, char *argv[])
@@ -228,7 +223,5 @@ int main(int argc, char *argv[])
             numPlace++;
         }
     }
-
-    //pthread_exit(0);
 }
 
