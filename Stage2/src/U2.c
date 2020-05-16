@@ -30,7 +30,7 @@ struct msg
 };
 
 void sigalarm_handler(int signo) {
-    printf("Client Time Ended...\n");
+    fprintf(stderr, "Client Time Ended...\n");
     pthread_exit(0);
 }
 
@@ -51,9 +51,9 @@ void *userThread(void *arg)
     if ((mkfifo(client_fifo, 0666) < 0))
     {
         if (errno == EEXIST)
-            printf("%s already exists\n", client_fifo);
+            fprintf(stderr, "%s already exists\n", client_fifo);
         else {
-            printf("Not able to create %s", client_fifo);
+            fprintf(stderr, "Not able to create %s", client_fifo);
             pthread_exit(0);
         }
     }

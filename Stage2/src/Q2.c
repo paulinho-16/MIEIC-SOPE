@@ -149,7 +149,7 @@ void *lateThreads(void *arg) {
 }
 
 void sigalarm_handler(int signo) {
-    printf("Bathroom Closing ...\n");
+    fprintf(stderr, "Bathroom Closing ...\n");
     late = true;
     unlink(server_fifo);
     return;
@@ -194,15 +194,15 @@ int main(int argc, char *argv[])
     if ((mkfifo(server_fifo, 0666) < 0))
     {
         if (errno == EEXIST)
-            printf("%s already exists\n", server_fifo);
+            fprintf(stderr, "%s already exists\n", server_fifo);
         else
-            printf("Not able to create %s\n", server_fifo);
+            fprintf(stderr, "Not able to create %s\n", server_fifo);
     }
 
-    printf("Bathroom Opening ...\n");
+    fprintf(stderr, "Bathroom Opening ...\n");
 
     if ((fd_server = open(server_fifo, O_RDONLY )) < 0)
-        printf("Couldn't open %s\n", server_fifo);
+        fprintf(stderr, "Couldn't open %s\n", server_fifo);
 
     while(!late)
     {
