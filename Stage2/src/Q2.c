@@ -64,8 +64,8 @@ void *serverThread(void *arg)
 
     int fd_client;
 
-    if(nthreads!=-1)
-        rec.pl=-1;
+    if(nplaces != -1)
+        rec.pl = -1;
 
     printf("%lu ; %d ; %d ; %lu ; %f ; %d ; RECVD\n",time(NULL),rec.i,rec.pid,rec.tid,rec.dur,rec.pl);
 
@@ -201,8 +201,9 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "Bathroom Opening ...\n");
 
-    if ((fd_server = open(server_fifo, O_RDONLY )) < 0)
-        fprintf(stderr, "Couldn't open %s\n", server_fifo);
+    if ((fd_server = open(server_fifo, O_RDONLY )) < 0) {
+        pthread_exit(0);
+    }
 
     while(!late)
     {
@@ -221,8 +222,10 @@ int main(int argc, char *argv[])
         }
     }
 
-    pthread_t thr;
-    pthread_create(&thr, NULL, lateThreads, NULL);
+    if (nthreads != -1) {
+        pthread_t thr;
+        pthread_create(&thr, NULL, lateThreads, NULL);
+    }
     pthread_exit(0);
 }
 
